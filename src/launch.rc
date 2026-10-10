@@ -1,0 +1,25 @@
+#include <winver.h>
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 0,4,0,0
+PRODUCTVERSION 0,4,0,0
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "DBZ 3 Access (open source accessibility mod)"
+      VALUE "FileDescription", "DBZ 3 Access: checks and repairs the screen reader mod, then starts the game"
+      VALUE "FileVersion", "0.4.0"
+      VALUE "InternalName", "Play DBZ3 Access"
+      VALUE "OriginalFilename", "Play DBZ3 Access.exe"
+      VALUE "ProductName", "DBZ 3 Access"
+      VALUE "ProductVersion", "0.4.0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END

@@ -1,0 +1,15 @@
+# build output
+out/
+
+# personal save data and decrypted save dumps
+save-backup/
+tools/plain_current.bin
+
+# intermediate OCR output (data/text.tsv is the cleaned table)
+data/text_raw.tsv
+
+# old copies kept while testing
+*.bak-*
+
+# unsent draft for the port developer
+docs/port-developer-request.md

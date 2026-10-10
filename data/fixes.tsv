@@ -1,0 +1,231 @@
+# Hand corrections: pack checksum, texture index, text. Overrides OCR. Empty text = never read.
+# Character select names (pack e8989c42)
+e8989c42	25	Computer
+e8989c42	26	Goku
+e8989c42	27	Tien
+e8989c42	28	Teen Gohan
+e8989c42	29	Kid Gohan
+e8989c42	30	Kid Goku
+e8989c42	31	Great Saiyaman
+e8989c42	32	Goten
+e8989c42	33	Supreme Kai
+e8989c42	34	Krillin
+e8989c42	35	Nappa
+e8989c42	36	Piccolo
+e8989c42	37	Raditz
+e8989c42	38	Hercule
+e8989c42	39	Kid Trunks
+e8989c42	40	Trunks
+e8989c42	41	Gohan
+e8989c42	42	Uub
+e8989c42	43	Videl
+e8989c42	44	Vegeta
+e8989c42	45	Yamcha
+e8989c42	46	Captain Ginyu
+e8989c42	47	Saibamen
+e8989c42	48	Cell Jr.
+e8989c42	49	Broly
+e8989c42	50	Omega Shenron
+e8989c42	51	Cooler
+e8989c42	52	Bardock
+e8989c42	53	Dabura
+e8989c42	54	Kid Buu
+e8989c42	55	Super Buu
+e8989c42	56	Majin Buu
+e8989c42	57	Dr. Gero
+e8989c42	58	Android 18
+e8989c42	59	Android 17
+e8989c42	60	Android 16
+e8989c42	61	Frieza
+e8989c42	62	Recoome
+e8989c42	63	Random or locked character
+e8989c42	64	Cell
+e8989c42	3	
+e8989c42	4	
+e8989c42	5	
+e8989c42	6	
+e8989c42	7	
+e8989c42	8	
+e8989c42	9	
+e8989c42	10	
+# Character select: Normal/Custom/Edit Skills list picture (read by menus.c instead)
+e1332849	4	
+# Titles and whole-list pictures (lists are read through menus.c or not at all)
+21f63f3f	1	
+29f6ab39	14	
+5e9d20ab	0	
+5e9d20ab	3	Stage selection
+eca1d12d	0	
+faf4148a	7	
+faf4148a	8	
+# Combo counter digit sheets and HITS label
+436b9e5b	2	
+b97b014f	17	
+b97b014f	20	
+# Button icon atlas (also contains the words DRAGON RUSH)
+c8a71fa1	0	
+c8a71fa1	1	
+26da3539	11	Kami's Lookout
+26da3539	13	Dr. Gero's Lab
+b97b014f	15
+8d82d441	15
+8d82d441	24
+8d82d441	42	Videl
+8d82d441	61	Broly
+b24eca52	0	Received a capsule. A to see it
+b24eca52	3	Received a Scouter
+b24eca52	5	Received the Dragon Radar
+b24eca52	1
+b24eca52	9
+700efb0b	9	Menu
+# skill card command lines (transcribed from the pictures)
+0245d810	3	After kick, kick, kick, punch: ki. After kick, forward kick, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+04ea763e	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+195a0b9e	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+20dec7f8	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+211cadcf	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+3277585d	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+3a037e41	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+47933229	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+4ec2c62f	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+57d9f76e	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+5fadd172	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+66291d14	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+9793e357	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+a746db37	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+a8b8811f	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+aef0971c	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+b70c1e70	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+c0ec96cb	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+c6a480c8	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+c766eaff	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+c95adae0	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+ccd4441b	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+d1838196	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+d8d27590	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+d9f7a78a	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+ed89d30b	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+f23d4c64	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+fee22699	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+05281c09	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+25b7e12e	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+09f776f4	3	After kick, kick, forward kick, kick: ki. After forward punch, punch, punch, kick: ki. Back ki. Uses 2 Ki gauges.
+89e5160f	3	After kick, kick, forward kick, kick: ki. After forward punch, punch, punch, kick: ki. Back ki. Uses 2 Ki gauges.
+bbd3748d	3	After kick, kick, forward kick, kick: ki. After forward punch, punch, punch, kick: ki. Back ki. Uses 2 Ki gauges.
+140557c2	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+23184f00	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+fa0b36ee	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+1643e99b	3	After punch, punch, punch, punch: ki. After kick, kick, forward kick, forward kick: ki. Forward ki. Uses 1 Ki gauge.
+189861a9	3	After punch, punch, punch, punch: ki. After forward kick, punch, forward punch, kick: ki. Forward ki. Uses 1 Ki gauge.
+24758b19	3	After punch, punch, punch, punch: ki. After kick, kick, back kick: ki. Forward ki. Uses 1 Ki gauge.
+6d9bb3f0	3	After punch, punch, punch, punch: ki. After kick, kick, back kick: ki. Forward ki. Uses 1 Ki gauge.
+2fc725fd	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Back ki. Uses 1 Ki gauge.
+785fe84c	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Back ki. Uses 1 Ki gauge.
+31566888	3	After kick, forward kick, kick: ki. After forward punch, kick, kick, kick: ki. Back ki. Uses 2 Ki gauges.
+33b5326a	3	After kick, forward kick, kick: ki. After forward kick, kick, back kick, kick: ki. Back ki. Uses 2 Ki gauges.
+39c5f6b9	3	After kick, kick, forward kick, kick: ki. After back punch, punch, punch, kick: ki. Back ki. Uses 2 Ki gauges.
+c78152d2	3	After kick, kick, forward kick, kick: ki. After back punch, punch, punch, kick: ki. Back ki. Uses 2 Ki gauges.
+3cacd06f	3	After kick, kick, forward kick, kick: ki. After forward kick, kick, kick: ki. Back ki. Uses 2 Ki gauges.
+52b0d1b8	3	After kick, kick, forward kick, kick: ki. After forward kick, kick, kick: ki. Back ki. Uses 2 Ki gauges.
+3d6eba58	3	After punch, punch, punch, punch: ki. After back punch, punch, punch, forward punch: ki. Forward ki. Uses 1 Ki gauge.
+413c9c07	3	After kick, kick, kick, kick: ki. After back kick, back kick: ki. Uses 2 Ki gauges.
+457068cb	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. As Majin Vegeta. Uses 1 or 2 Ki gauges.
+4651581e	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, forward punch: ki. Uses 1 Ki gauge.
+5372bb8f	3	After punch, punch, forward kick, kick, kick: ki. After forward kick, punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+58c0156b	3	After kick, kick, kick: ki. After kick, punch: ki. Forward ki. Uses 1 Ki gauge.
+8f4ab821	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, back punch: ki. Forward ki. Uses 1 Ki gauge.
+913c4d79	3	After punch, punch, punch, punch: ki. After forward kick, punch, punch, back punch: ki. Forward ki. Uses 1 Ki gauge.
+a30a2ffb	3	After punch, punch, punch, punch: ki. After forward punch, forward punch, punch, forward punch: ki. Forward ki. Uses 1 Ki gauge.
+a85f3932	3	After punch, punch, punch, punch: ki. After forward kick, kick, back kick, kick: ki. Forward ki. Uses 1 Ki gauge.
+b1440873	3	After punch, punch, back kick: ki. After forward kick, kick, kick, back kick: ki. Uses 2 Ki gauges.
+b7eba65d	3	After forward punch, kick, kick: ki. After forward kick, forward kick, punch: ki. Back ki. Uses 2 Ki gauges.
+ba111eba	3	After punch, punch, punch, punch: ki. After forward kick, kick, kick, forward kick, kick: ki. Forward ki. Uses 1 Ki gauge.
+c00b2ee6	3	After kick, forward kick, punch: ki. After forward kick, forward punch, punch: ki. Back ki. Uses 2 Ki gauges.
+c12efcfc	3	After forward punch, forward punch, punch, forward punch: ki. After forward kick, punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+d835cdbd	3	After forward punch, forward punch, punch, forward punch: ki. After forward kick, kick, kick: ki. Back ki. Uses 2 Ki gauges.
+e156b9f6	3	Forward ki. Ki gauge does not decrease.
+# more skill card command lines (2026-10-10, dropped by the cleaner)
+018350e8	3	After punch, punch, forward punch, punch, punch: ki. After forward punch, forward punch, punch, punch: ki. Back ki. Uses 1 Ki gauge.
+0bf3943b	3	After punch, punch, punch, punch: ki. After forward punch, punch, forward punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+132acf4d	3	After punch, punch, punch, punch: ki. After forward punch, back punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+136893db	3	After forward punch, punch, punch, punch: ki. After forward kick, punch, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+1a9c8366	3	After punch, punch, back punch, punch: ki. After forward punch, punch, forward punch, punch: ki. Back ki. Uses 2 Ki gauges.
+1b5ee951	3	After punch, forward punch, punch: ki. After kick, kick, forward kick, forward kick: ki. Back ki. Uses 2 Ki gauges.
+3bc11476	3	After punch, forward punch, punch: ki. After kick, kick, forward kick, forward kick: ki. Back ki. Uses 2 Ki gauges.
+6c59d9c7	3	After punch, forward punch, punch: ki. After kick, kick, forward kick, forward kick: ki. Back ki. Uses 2 Ki gauges.
+1df1477f	3	After punch, forward punch, punch: ki. After forward kick, kick, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+284d59c9	3	After kick, kick, kick, kick: ki. After forward punch, punch, punch: ki. Uses 2 Ki gauges.
+28aae1e4	3	After kick, kick, kick: ki. After forward punch, punch, punch, punch: ki. Back ki. Uses 1 Ki gauge.
+363bac91	3	After punch, forward punch, punch: ki. After back punch, back kick: ki. Uses 2 Ki gauges.
+371e7e8b	3	After punch, forward punch, punch: ki. After forward kick, kick, punch, punch: ki. Back ki. Uses 1 Ki gauge.
+ae172f31	3	After punch, forward punch, punch: ki. After forward kick, kick, punch, punch: ki. Back ki. Uses 1 Ki gauge.
+46b6e033	3	After punch, forward punch, punch: ki. After kick, kick, forward kick, kick, forward punch: ki. Back ki. Uses 2 Ki gauges.
+47748a04	3	After kick, kick, forward kick, forward kick: ki. After forward punch, punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+84f816c5	3	After kick, kick, forward kick, forward kick: ki. After forward punch, punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+d9101fa7	3	After kick, kick, forward kick, forward kick: ki. After forward punch, punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+4a698ace	3	After kick, kick, kick, forward kick: ki. After forward punch, forward punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+4b08ae9c	7	When the Ki Burst starts, counter the attack using left stick and E button, and upon a successful counter, rotate the left and right sticks as fast as you can.
+4d044ed7	3	After punch, forward punch, punch: ki. After forward punch, punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+541f7f96	3	After kick, kick, forward kick, forward punch, punch: ki. After forward punch, punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+561b9d59	3	After kick, kick, forward kick, kick: ki. After forward punch, forward punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+be5dea76	3	After kick, kick, forward kick, kick: ki. After forward punch, forward punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+5c6b598a	3	After forward punch, punch, punch, punch: ki. After forward kick, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+5f4a695f	3	After punch, punch, punch, punch: ki. After kick, kick, kick, forward kick: ki. Forward ki. Uses 1 Ki gauge.
+6144d90d	3	After punch, forward punch, punch: ki. After forward kick, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+646fa34d	3	After forward kick, kick, forward kick, punch, punch: ki. After forward punch, punch, punch, punch: ki. Back ki. Uses half a Ki gauge.
+6f9f513f	3	After kick, kick, forward kick, forward kick, punch: ki. After forward punch, kick, punch: ki. Back ki. Uses 2 Ki gauges.
+73ed46a8	3	After forward punch, forward kick, punch: ki. After forward kick, forward kick, punch: ki. Back ki. Uses 2 Ki gauges.
+7542e886	3	After forward punch, forward punch, punch, punch, punch: ki. After forward kick, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+7d36ce9a	3	After punch, forward punch, punch: ki. After forward kick, kick, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+90fe274e	3	After punch, punch, punch, punch: ki. After forward punch, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+9c214db3	3	After kick, kick, forward kick: ki. After forward punch, punch, punch, forward punch: ki. Back ki. Uses 2 Ki gauges.
+a5a581d5	3	After forward punch, punch, punch, punch: ki. After forward kick, punch, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+a684b100	3	After kick, kick, forward kick, kick: ki. After forward punch, punch, punch, punch, punch: ki. Back ki. Uses 1 Ki gauge.
+cd162e2c	3	After punch, forward punch, punch, punch, punch: ki. After forward punch, punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+df5809a4	3	After punch, forward punch, punch, punch, punch: ki. After forward punch, punch, punch, punch: ki. Back ki. Uses 2 Ki gauges.
+d56c3b3f	5	Good. Then try gathering your energy. Hold down the G button and push left on the D-pad twice, holding it down the second time.
+dfbfb189	3	After punch, forward punch, punch: ki. After kick, kick, forward kick, forward kick, punch: ki. Back ki. Uses 1 Ki gauge.
+ec4bb93c	3	After punch, punch, forward punch, punch: ki. After kick, kick, punch, punch: ki. Forward ki. Uses 1 Ki gauge.
+ff204cae	3	After punch, forward punch, punch: ki. After forward punch, punch, punch, kick: ki. Back ki. Uses 1 Ki gauge.
+# dialogue and messages the cleaner dropped (2026-10-10, read from the pictures)
+84bcf5d4	2	Does Goku have a girlfriend? No... Goku wouldn't do anything like that. He wouldn't dare...! ...I guess he's not here. I'll come back later. Tell him I said hello when you see him.
+0f5a2e2e	6	If it will help me defeat Goku, I will do it. Wow... Talk about a one track mind. Bo-ring!
+236e7248	31	Autosave failed. Would you like to try again? Selecting NO will continue without saving.
+ebdb339d	31	Autosave failed. Would you like to try again? Selecting NO will continue without saving.
+03d54312	0	So, this is the famous Korin Tower... How interesting. I love the decor...
+b9f34e22	18	The active storage device has been removed. Save file creation failed.
+212c8788	13	Gi kyaaaa! Gi kya kya kyaaa!
+a0b285d5	0	Gi kyaaaa! Gi kya kya kyaaa!
+7127c966	0	Uha... kuwaaaaah!
+abe84929	3	Ugaaaaaaaaah!!!
+b4a0bcbd	13	Ugaaaaaaaaah!!!
+4f8eb6e1	49	: View Skill Sheet, X button
+4f8eb6e1	48	: Erase Character, B button
+4f8eb6e1	52	: Random Select, X button
+4f8eb6e1	46	: Remove skill, B button
+# Dragon Universe battle conditions (pack 85654085), read from the pictures
+85654085	2	Defeat the enemy!
+85654085	3	Health level drops by half! Watch the health gauge!
+85654085	4	Ki does not recover automatically! Watch your Ki gauge!
+85654085	5	Health keeps dropping! Defeat the enemy before it runs out!
+85654085	6	Ki keeps dropping! Watch your Ki consumption!
+85654085	7	Ki is down to zero! Fight with zero Ki!
+85654085	8	You can't be defensive here! Keep attacking!
+# pause pack titles (pictures, OCR missed them)
+4e500b05	1	1P Pause
+4e500b05	2	2P Pause
+4e500b05	3	Exit?
+4e500b05	4	Menu
+4e500b05	5	Continue?
+# system messages (pack ebdb339d) OCR slips
+ebdb339d	2	If you continue playing, the game will not Autosave. OK?
+ebdb339d	17	Saving data. Do not reset or turn off the PlayStation 3 system.
+ebdb339d	21	Save data already exists. Would you like to like to overwrite the data?
+ebdb339d	32	Checking data. Do not reset or turn off the PlayStation 3 system.
+236e7248	2	If you continue playing, the game will not Autosave. OK?
+236e7248	17	Saving data. Do not reset or turn off the PlayStation 3 system.
+236e7248	32	Checking data. Do not reset or turn off the PlayStation 3 system.
+# capsule name slip
+69475272	560	Memories of Dr. Gero
+4710e6c1	0	Memories of Dr. Gero
+b65d9602	560	Memories of Dr. Gero

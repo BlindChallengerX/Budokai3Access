@@ -1,0 +1,6 @@
+LIBRARY rexgpu-xenos.dll
+EXPORTS
+    rex_gpu_abi_version = rexgpu-xenos-original.rex_gpu_abi_version
+    rex_gpu_create
+    AmdPowerXpressRequestHighPerformance = rexgpu-xenos-original.AmdPowerXpressRequestHighPerformance DATA
+    NvOptimusEnablement = rexgpu-xenos-original.NvOptimusEnablement DATA
