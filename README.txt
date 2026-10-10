@@ -7,10 +7,12 @@ running.
 
 WHAT YOU NEED
 
-- The Budokai 3 HD PC port by NovaPowers, version 1.4.2.3:
-  https://github.com/novapowers0/DBZ-Budokai-3-HD-Collection
+- The Budokai 3 HD PC port by NovaPowers, version 1.4.2.3 (newer versions
+  are not tested yet):
+  https://github.com/novapowers0/DBZ-Budokai-3-HD-Collection/releases/tag/v1.4.2.3
 - Your own copy of the game, USA version, set up as the port explains.
-  Get the game running first, then add this mod.
+  Get the game running first, then add this mod. SETUP-GUIDE.txt on the
+  mod's GitHub page explains the whole setup in English.
 
 
 INSTALL
