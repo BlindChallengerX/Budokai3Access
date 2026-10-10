@@ -19,6 +19,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
 
@@ -136,6 +137,38 @@ static void port_settings(void) {
     toml_default("mnk_mode", "true", L"keyboard controls");
 }
 
+/* The mod only knows the English game text. The port's game language
+ * (dbz3_language, Xbox ids: 1 English, 2 Japanese, 3 German, 4 French,
+ * 5 Spanish, 6 Italian) defaults to English; if the player picked another in
+ * the port's launcher, offer to switch it back. */
+static void english_check(void) {
+    static const wchar_t *names[] = { L"", L"English", L"Japanese", L"German", L"French", L"Spanish", L"Italian" };
+    wchar_t path[MAX_PATH];
+    swprintf(path, MAX_PATH, L"%lsdbz3_user.toml", g_dir);
+    FILE *f = _wfopen(path, L"rb");
+    if (!f) return;
+    char buf[16384]; size_t n = fread(buf, 1, sizeof buf - 1, f); buf[n] = 0; fclose(f);
+    char *line = strstr(buf, "dbz3_language");
+    if (!line || (line > buf && line[-1] != '\n')) return;
+    char *eq = strchr(line, '=');
+    char *end = strchr(line, '\n');
+    if (!eq || (end && eq > end)) return;
+    int lang = atoi(eq + 1);
+    if (lang == 1) return;
+    logw(L"game language is %d, not English", lang);
+    wchar_t msg[400];
+    swprintf(msg, 400, L"The game language is set to %ls. Budokai 3 Access can only read the game in English.\n\n"
+             L"Switch the game to English?", (lang >= 2 && lang <= 6) ? names[lang] : L"another language");
+    if (MessageBoxW(NULL, msg, L"Budokai 3 Access", MB_YESNO | MB_ICONQUESTION) != IDYES) return;
+    f = _wfopen(path, L"wb");
+    if (!f) return;
+    fwrite(buf, 1, line - buf, f);
+    fputs("dbz3_language = 1", f);
+    if (end) fputs(end, f);                       /* rest of the file, from the line break on */
+    fclose(f);
+    logw(L"set dbz3_language = 1 (English)");
+}
+
 int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmd, int show) {
     (void)inst; (void)prev; (void)show;
     GetModuleFileNameW(NULL, g_dir, MAX_PATH);
@@ -151,6 +184,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmd, int show) {
     int ok = repair();
     port_settings();
     if (repair_only) return ok ? 0 : 1;
+    english_check();
     STARTUPINFOW si; PROCESS_INFORMATION pi;
     memset(&si, 0, sizeof si); si.cb = sizeof si;
     if (!CreateProcessW(exe, NULL, NULL, NULL, FALSE, 0, NULL, g_dir, &si, &pi)) {

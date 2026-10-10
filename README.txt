@@ -1,4 +1,4 @@
-Budokai 3 Access 1.0
+Budokai 3 Access 1.0.1
 
 A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is
@@ -7,9 +7,9 @@ running.
 
 WHAT YOU NEED
 
-- The Budokai 3 HD PC port by NovaPowers, version 1.4.2.3 (newer versions
-  are not tested yet):
-  https://github.com/novapowers0/DBZ-Budokai-3-HD-Collection/releases/tag/v1.4.2.3
+- The Budokai 3 HD PC port by NovaPowers. Tested with versions 1.4.3.1 and
+  1.4.2.3:
+  https://github.com/novapowers0/DBZ-Budokai-3-HD-Collection/releases/tag/v1.4.3.1
 - Your own copy of the game, USA version, set up as the port explains.
   Get the game running first, then add this mod. SETUP-GUIDE.txt on the
   mod's GitHub page explains the whole setup in English.
@@ -17,7 +17,7 @@ WHAT YOU NEED
 
 INSTALL
 
-1. Unzip Budokai3Access-1.0.zip into the game folder, the folder with dbz3.exe.
+1. Unzip Budokai3Access-1.0.1.zip into the game folder, the folder with dbz3.exe.
 2. Run "Play Budokai 3 Access.exe" from that folder.
 
 If Windows says "Windows protected your PC", choose "More info", then
