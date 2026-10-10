@@ -3,7 +3,7 @@
  * Xbox pad state through __imp__XamInputGetState (r3 user, r4 flags,
  * r5 guest XINPUT_STATE*). The mod wraps that import to read the buttons the
  * player holds (for mod hotkeys) and, for automated testing, to add buttons
- * (DBZ3Access\cmd.txt: "pad up 200" holds D-pad up for 200 ms).
+ * (Budokai3Access\cmd.txt: "pad up 200" holds D-pad up for 200 ms).
  */
 #include "access.h"
 #include <stdio.h>

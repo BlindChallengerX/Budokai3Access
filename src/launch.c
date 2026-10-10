@@ -1,19 +1,19 @@
 /*
- * "Play DBZ3 Access.exe": checks the mod is installed, repairs it, starts the
+ * "Play Budokai 3 Access.exe": checks the mod is installed, repairs it, starts the
  * game.
  *
  * The mod's loader replaces the port's graphics plugin rexgpu-xenos.dll (the
  * port's own file is kept as rexgpu-xenos-original.dll). A port update, or
  * the launcher's "Repair install", puts the port's file back and the mod
  * would stop loading. Every time this program runs it:
- *   1. looks at rexgpu-xenos.dll: if it is not ours (no "DBZ 3 Access"
+ *   1. looks at rexgpu-xenos.dll: if it is not ours (no "Budokai 3 Access"
  *      product name), it is a new port file, so it becomes the original;
- *   2. puts the current loader (DBZ3Access\loader\rexgpu-xenos.dll) in place
+ *   2. puts the current loader (Budokai3Access\loader\rexgpu-xenos.dll) in place
  *      if it is missing or different;
  *   3. makes sure dbz3_user.toml has "audio_maxqframes = 3" (see below);
  *   4. starts dbz3.exe, unless run with --repair (used by the build scripts).
  * It only copies and renames files inside the game folder. What it did is
- * written to DBZ3Access\launch.log.
+ * written to Budokai3Access\launch.log.
  */
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -35,12 +35,13 @@ static void logw(const wchar_t *fmt, ...) {
 
 static void fail(const wchar_t *msg) {
     logw(L"error: %ls", msg);
-    MessageBoxW(NULL, msg, L"DBZ 3 Access", MB_OK | MB_ICONWARNING);
+    MessageBoxW(NULL, msg, L"Budokai 3 Access", MB_OK | MB_ICONWARNING);
 }
 
 static int exists(const wchar_t *p) { return GetFileAttributesW(p) != INVALID_FILE_ATTRIBUTES; }
 
-/* Is this our loader? Our files carry the product name "DBZ 3 Access". */
+/* Is this our loader? Our files carry the product name "Budokai 3 Access"
+ * ("DBZ 3 Access" before 1.0). */
 static int is_ours(const wchar_t *path) {
     DWORD h = 0, n = GetFileVersionInfoSizeW(path, &h);
     if (!n) return 0;
@@ -48,7 +49,7 @@ static int is_ours(const wchar_t *path) {
     wchar_t *name = NULL; UINT len = 0; int ours = 0;
     if (buf && GetFileVersionInfoW(path, 0, n, buf) &&
         VerQueryValueW(buf, L"\\StringFileInfo\\040904B0\\ProductName", (void **)&name, &len) && name)
-        ours = wcscmp(name, L"DBZ 3 Access") == 0;
+        ours = wcscmp(name, L"Budokai 3 Access") == 0 || wcscmp(name, L"DBZ 3 Access") == 0;
     if (buf) HeapFree(GetProcessHeap(), 0, buf);
     return ours;
 }
@@ -78,43 +79,41 @@ static int repair(void) {
     wchar_t plugin[MAX_PATH], orig[MAX_PATH], ours[MAX_PATH];
     swprintf(plugin, MAX_PATH, L"%lsrexgpu-xenos.dll", g_dir);
     swprintf(orig, MAX_PATH, L"%lsrexgpu-xenos-original.dll", g_dir);
-    swprintf(ours, MAX_PATH, L"%lsDBZ3Access\\loader\\rexgpu-xenos.dll", g_dir);
-    if (!exists(ours)) { fail(L"The DBZ 3 Access loader is missing (DBZ3Access\\loader\\rexgpu-xenos.dll). Please reinstall the mod."); return 0; }
+    swprintf(ours, MAX_PATH, L"%lsBudokai3Access\\loader\\rexgpu-xenos.dll", g_dir);
+    if (!exists(ours)) { fail(L"The Budokai 3 Access loader is missing (Budokai3Access\\loader\\rexgpu-xenos.dll). Please reinstall the mod."); return 0; }
     if (exists(plugin) && !is_ours(plugin)) {
         /* The port's own graphics plugin (new install, port update or Repair install). */
         if (!MoveFileExW(plugin, orig, MOVEFILE_REPLACE_EXISTING)) {
-            fail(L"Could not set up DBZ 3 Access: the game's graphics plugin is in use. Close the game and try again.");
+            fail(L"Could not set up Budokai 3 Access: the game's graphics plugin is in use. Close the game and try again.");
             return 0;
         }
         logw(L"kept the port's graphics plugin as rexgpu-xenos-original.dll");
     }
     if (!exists(orig)) {
-        fail(L"The game's graphics plugin is missing (rexgpu-xenos-original.dll). Use Repair install in the game's launcher, then start DBZ 3 Access again.");
+        fail(L"The game's graphics plugin is missing (rexgpu-xenos-original.dll). Use Repair install in the game's launcher, then start Budokai 3 Access again.");
         return 0;
     }
     if (!exists(plugin) || !same_file(plugin, ours)) {
         if (!CopyFileW(ours, plugin, FALSE)) {
             if (exists(plugin)) { logw(L"loader in use; keeping the installed one"); return 1; }
-            fail(L"Could not install the DBZ 3 Access loader in the game folder.");
+            fail(L"Could not install the Budokai 3 Access loader in the game folder.");
             return 0;
         }
-        logw(L"installed the DBZ 3 Access loader");
+        logw(L"installed the Budokai 3 Access loader");
     }
     return 1;
 }
 
-/* Sound delay: the port queues audio_maxqframes sound frames of 5.3 ms
- * (default 8). Measured key press to menu click: 130 ms with 8, 105 ms with
- * 3, no dropouts in menus or fights. The port rewrites dbz3_user.toml when
- * its settings change, so the line is added again if it went missing; a
- * value the player set by hand is left alone. */
-static void audio_queue_setting(void) {
+/* Adds "key = value" to dbz3_user.toml unless the key is already there. The
+ * port rewrites the file when its settings change, so a line can go missing
+ * and is added again; a value the player set by hand is left alone. */
+static void toml_default(const char *key, const char *value, const wchar_t *why) {
     wchar_t path[MAX_PATH];
     swprintf(path, MAX_PATH, L"%lsdbz3_user.toml", g_dir);
     FILE *f = _wfopen(path, L"rb");
     if (f) {
         char buf[16384]; size_t n = fread(buf, 1, sizeof buf - 1, f); buf[n] = 0; fclose(f);
-        if (strstr(buf, "audio_maxqframes")) return;
+        if (strstr(buf, key)) return;
         f = _wfopen(path, L"ab");
         if (!f) return;
         if (n && buf[n - 1] != '\n') fputs("\n", f);
@@ -122,9 +121,19 @@ static void audio_queue_setting(void) {
         f = _wfopen(path, L"wb");
         if (!f) return;
     }
-    fputs("audio_maxqframes = 3\n", f);
+    fprintf(f, "%s = %s\n", key, value);
     fclose(f);
-    logw(L"set audio_maxqframes = 3 in dbz3_user.toml (less sound delay)");
+    logw(L"set %hs = %hs in dbz3_user.toml (%ls)", key, value, why);
+}
+
+/* Sound delay: the port queues audio_maxqframes sound frames of 5.3 ms
+ * (default 8). Measured key press to menu click: 130 ms with 8, 105 ms with
+ * 3, no dropouts in menus or fights.
+ * Keyboard: the port's keyboard controls (mnk_mode) are off by default; many
+ * blind players have no controller. A controller still works with it on. */
+static void port_settings(void) {
+    toml_default("audio_maxqframes", "3", L"less sound delay");
+    toml_default("mnk_mode", "true", L"keyboard controls");
 }
 
 int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmd, int show) {
@@ -133,14 +142,14 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmd, int show) {
     wchar_t *slash = wcsrchr(g_dir, L'\\');
     if (slash) slash[1] = 0;
     wchar_t logp[MAX_PATH];
-    swprintf(logp, MAX_PATH, L"%lsDBZ3Access\\launch.log", g_dir);
+    swprintf(logp, MAX_PATH, L"%lsBudokai3Access\\launch.log", g_dir);
     g_log = _wfopen(logp, L"a, ccs=UTF-8");
     int repair_only = cmd && wcsstr(cmd, L"--repair") != NULL;
     wchar_t exe[MAX_PATH];
     swprintf(exe, MAX_PATH, L"%lsdbz3.exe", g_dir);
-    if (!exists(exe)) { fail(L"Put Play DBZ3 Access.exe in the game folder, next to dbz3.exe."); return 1; }
+    if (!exists(exe)) { fail(L"Put Play Budokai 3 Access.exe in the game folder, next to dbz3.exe."); return 1; }
     int ok = repair();
-    audio_queue_setting();
+    port_settings();
     if (repair_only) return ok ? 0 : 1;
     STARTUPINFOW si; PROCESS_INFORMATION pi;
     memset(&si, 0, sizeof si); si.cb = sizeof si;

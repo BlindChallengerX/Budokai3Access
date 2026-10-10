@@ -35,7 +35,7 @@
 volatile int g_beeps_on = 1;
 
 /* Volume of all the mod's sounds, in percent (Page Up / Page Down), kept in
- * DBZ3Access\sound_volume.txt. */
+ * Budokai3Access\sound_volume.txt. */
 static volatile int g_vol = 100;
 static void vol_path(wchar_t *p) { swprintf(p, MAX_PATH, L"%lssound_volume.txt", g_mod_dir); }
 static void vol_load(void) {

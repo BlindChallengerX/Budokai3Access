@@ -53,8 +53,8 @@ void selfcheck_fail(const char *what) {
     if (g_failed) return;
     g_failed = 1;
     log_line("SELF CHECK FAILED: %s (port %s)", what, g_port);
-    speakf(0, "DBZ 3 Access: %s. The game port may have been updated (version %s). The mod has switched itself off "
-              "so the game keeps running. Please look for a DBZ 3 Access update.", what, g_port);
+    speakf(0, "Budokai 3 Access: %s. The game port may have been updated (version %s). The mod has switched itself off "
+              "so the game keeps running. Please look for a Budokai 3 Access update.", what, g_port);
 }
 
 int selfcheck_failed(void) { return g_failed; }

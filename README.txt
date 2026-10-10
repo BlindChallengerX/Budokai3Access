@@ -1,4 +1,4 @@
-DBZ 3 Access 1.0
+Budokai 3 Access 1.0
 
 A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is
@@ -15,16 +15,40 @@ WHAT YOU NEED
 
 INSTALL
 
-1. Unzip DBZ3Access-1.0.zip into the game folder, the folder with dbz3.exe.
-2. Run "Play DBZ3 Access.exe" from that folder.
+1. Unzip Budokai3Access-1.0.zip into the game folder, the folder with dbz3.exe.
+2. Run "Play Budokai 3 Access.exe" from that folder.
 
-That's it. Always start the game with "Play DBZ3 Access.exe". The port's
-launcher opens; press Enter to play. You should hear "DBZ 3 Access loaded".
+That's it. Always start the game with "Play Budokai 3 Access.exe". The port's
+launcher opens; press Enter to play. You should hear "Budokai 3 Access loaded".
+
+
+PLAYING WITH A KEYBOARD
+
+No controller is needed. "Play Budokai 3 Access.exe" turns on the port's
+keyboard controls (a controller still works too). The keys:
+
+Move (left stick)        W A S D
+Punch (X button)         L
+Kick (A button)          Space
+Guard (B button)         Backspace
+Ki (Y button)            P
+D-pad                    Shift + arrow keys
+Right stick              Arrow keys
+LB / RB                  1 / 3
+LT / RT                  Q / E
+Start                    Enter
+Back                     Z
+Left stick click (L3)    F
+Right stick click (R3)   K
+
+In menus, Space (A) picks and P (Y) goes back. Where the mod names
+controller buttons, for example in Dragon Rush, X is L, Y is P, A is Space
+and B is Backspace. You can change the keys in the port's launcher.
 
 
 STARTING THE GAME
 
-"Play DBZ3 Access.exe" checks the mod is installed, repairs it if a port
+"Play Budokai 3 Access.exe" checks the mod is installed, repairs it if a port
 update replaced its loader, and starts the game. Make a desktop shortcut to
 it if you like. On the first menu the mod says New Game, Load Game or
 Continue as you move (Continue goes back to the main menu).
@@ -194,7 +218,7 @@ LB held, Shift+F5), and clicking the left stick (L3) does F6.
 
 SOUND DELAY
 
-The port keeps a small queue of game sound. "Play DBZ3 Access.exe" sets it
+The port keeps a small queue of game sound. "Play Budokai 3 Access.exe" sets it
 shorter (the line "audio_maxqframes = 3" in dbz3_user.toml), which takes
 about 25 ms off every game sound: a menu click now comes about 105 ms after
 the key press instead of 130. Most of what is left is the game itself
@@ -232,7 +256,7 @@ ORIGINAL MUSIC (OPTIONAL, NOT INCLUDED)
 The HD Collection replaced the original American soundtrack from the PS2
 release. If you own the PS2 version of Budokai 3 (USA), you can put the old
 music back yourself with the build_og_music.py script in the tools folder of
-the source: https://github.com/BlindChallengerX/DBZ3Access
+the source: https://github.com/BlindChallengerX/Budokai3Access
 The music is not included here and the mod works the same without it.
 
 
@@ -240,18 +264,18 @@ REMOVING THE MOD
 
 In the game folder, delete rexgpu-xenos.dll, then rename
 rexgpu-xenos-original.dll to rexgpu-xenos.dll. You can also delete the
-DBZ3Access folder and "Play DBZ3 Access.exe".
+Budokai3Access folder and "Play Budokai 3 Access.exe".
 
 
 IF SOMETHING GOES WRONG
 
 Port updates put the port's own rexgpu-xenos.dll back. That is expected:
-"Play DBZ3 Access.exe" puts the mod back each time you start the game with
+"Play Budokai 3 Access.exe" puts the mod back each time you start the game with
 it.
 
 If a port update changes things the mod relies on, the mod switches itself
 off and says so, and the game keeps running without it. Then look for a mod
 update.
 
-The mod's log is DBZ3Access\DBZ3Access.log. Please include it when you
+The mod's log is Budokai3Access\Budokai3Access.log. Please include it when you
 report a problem.

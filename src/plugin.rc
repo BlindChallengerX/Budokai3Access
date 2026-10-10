@@ -9,12 +9,12 @@ BEGIN
   BEGIN
     BLOCK "040904B0"
     BEGIN
-      VALUE "CompanyName", "DBZ 3 Access (open source accessibility mod)"
-      VALUE "FileDescription", "DBZ 3 Access loader: screen reader mod for the DBZ Budokai 3 HD port (wraps the port's graphics plugin, rexgpu-xenos-original.dll)"
+      VALUE "CompanyName", "Budokai 3 Access (open source accessibility mod)"
+      VALUE "FileDescription", "Budokai 3 Access loader: screen reader mod for the DBZ Budokai 3 HD port (wraps the port's graphics plugin, rexgpu-xenos-original.dll)"
       VALUE "FileVersion", "1.0.0"
-      VALUE "InternalName", "rexgpu-xenos (DBZ 3 Access wrapper)"
+      VALUE "InternalName", "rexgpu-xenos (Budokai 3 Access wrapper)"
       VALUE "OriginalFilename", "rexgpu-xenos.dll"
-      VALUE "ProductName", "DBZ 3 Access"
+      VALUE "ProductName", "Budokai 3 Access"
       VALUE "ProductVersion", "1.0.0"
     END
   END

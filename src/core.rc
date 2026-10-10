@@ -9,12 +9,12 @@ BEGIN
   BEGIN
     BLOCK "040904B0"
     BEGIN
-      VALUE "CompanyName", "DBZ 3 Access (open source accessibility mod)"
-      VALUE "FileDescription", "DBZ 3 Access screen reader mod for the DBZ Budokai 3 HD port"
+      VALUE "CompanyName", "Budokai 3 Access (open source accessibility mod)"
+      VALUE "FileDescription", "Budokai 3 Access screen reader mod for the DBZ Budokai 3 HD port"
       VALUE "FileVersion", "1.0.0"
-      VALUE "InternalName", "DBZ3Access"
-      VALUE "OriginalFilename", "DBZ3Access.dll"
-      VALUE "ProductName", "DBZ 3 Access"
+      VALUE "InternalName", "Budokai3Access"
+      VALUE "OriginalFilename", "Budokai3Access.dll"
+      VALUE "ProductName", "Budokai 3 Access"
       VALUE "ProductVersion", "1.0.0"
     END
   END

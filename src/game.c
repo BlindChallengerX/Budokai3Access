@@ -1,4 +1,4 @@
-/* Game-specific logic for DBZ3Access. */
+/* Game-specific logic for Budokai3Access. */
 #include "access.h"
 
 /* 820deac8: creates a fight announcement (Ready, Fight, KO, ...); r3 = message ID. */

@@ -1,15 +1,15 @@
 /*
- * DBZ3Access loader, as a wrapper around the port's graphics plugin.
+ * Budokai3Access loader, as a wrapper around the port's graphics plugin.
  *
  * dbz3.exe always loads its graphics plugin rexgpu-xenos.dll from the game
  * folder (the name is built into the executable). The installer renames the
  * port's file to rexgpu-xenos-original.dll and puts this one in its place.
  * Both plugin functions go to the original (export forwarders in
  * plugin.def); when the runtime creates its graphics system this wrapper
- * also starts DBZ3Access\DBZ3Access.dll. Nothing runs at DLL load.
+ * also starts Budokai3Access\Budokai3Access.dll. Nothing runs at DLL load.
  *
- * For development, if DBZ3Access\devreload.txt exists, the loader watches
- * DBZ3Access.dll and swaps in a rebuilt copy while the game keeps running.
+ * For development, if Budokai3Access\devreload.txt exists, the loader watches
+ * Budokai3Access.dll and swaps in a rebuilt copy while the game keeps running.
  */
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -28,10 +28,10 @@ static FILETIME mtime(const wchar_t *p) {
 
 static HMODULE load_core(int dev, unsigned n) {
     wchar_t src[MAX_PATH], run[MAX_PATH];
-    swprintf(src, MAX_PATH, L"%lsDBZ3Access.dll", g_dir);
+    swprintf(src, MAX_PATH, L"%lsBudokai3Access.dll", g_dir);
     if (!dev) return LoadLibraryW(src);
-    /* Load a copy so the build can overwrite DBZ3Access.dll. */
-    swprintf(run, MAX_PATH, L"%lsDBZ3Access_run%u.dll", g_dir, n);
+    /* Load a copy so the build can overwrite Budokai3Access.dll. */
+    swprintf(run, MAX_PATH, L"%lsBudokai3Access_run%u.dll", g_dir, n);
     if (!CopyFileW(src, run, FALSE)) return NULL;
     return LoadLibraryW(run);
 }
@@ -42,13 +42,13 @@ static DWORD WINAPI loader_thread(LPVOID unused) {
     GetModuleFileNameW(NULL, g_dir, MAX_PATH);
     wchar_t *slash = wcsrchr(g_dir, L'\\');
     if (slash) slash[1] = 0;
-    wcscat(g_dir, L"DBZ3Access\\");
-    swprintf(src, MAX_PATH, L"%lsDBZ3Access.dll", g_dir);
+    wcscat(g_dir, L"Budokai3Access\\");
+    swprintf(src, MAX_PATH, L"%lsBudokai3Access.dll", g_dir);
     swprintf(flag, MAX_PATH, L"%lsdevreload.txt", g_dir);
-    swprintf(logp, MAX_PATH, L"%lsDBZ3Access.log", g_dir);
+    swprintf(logp, MAX_PATH, L"%lsBudokai3Access.log", g_dir);
     int dev = GetFileAttributesW(flag) != INVALID_FILE_ATTRIBUTES;
     DeleteFileW(logp);
-    for (unsigned i = 0; i < 64; i++) { swprintf(old, MAX_PATH, L"%lsDBZ3Access_run%u.dll", g_dir, i); DeleteFileW(old); }
+    for (unsigned i = 0; i < 64; i++) { swprintf(old, MAX_PATH, L"%lsBudokai3Access_run%u.dll", g_dir, i); DeleteFileW(old); }
     unsigned n = 0;
     HMODULE core = load_core(dev, n);
     if (!core) return 0;

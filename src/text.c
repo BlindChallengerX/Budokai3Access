@@ -4,7 +4,7 @@
  * texture through 820..96ff0 (r5 = texture number in the current pack, global
  * 8238ce10 = pack, 8238ce14 = its index table), every frame.
  *
- * DBZ3Access\text.tsv maps (pack checksum, texture index) to the words in the
+ * Budokai3Access\text.tsv maps (pack checksum, texture index) to the words in the
  * image; it was made by OCR of every text image on the disc. The hook notes
  * which known texts are drawn; the mod thread speaks texts that appear and
  * forgets texts that have not been drawn for a moment.

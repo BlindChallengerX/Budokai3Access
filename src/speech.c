@@ -1,5 +1,5 @@
 /*
- * Speech for DBZ3Access: Prism (screen readers) loaded straight into the
+ * Speech for Budokai3Access: Prism (screen readers) loaded straight into the
  * game, which is 64-bit like Prism. Falls back to the Windows SAPI voice if
  * Prism is missing or finds nothing. All speaking happens on one worker
  * thread; game hooks only queue text.
@@ -42,7 +42,7 @@ static int start_prism(void) {
     wchar_t dll[MAX_PATH];
     swprintf(dll, MAX_PATH, L"%lsprism.dll", g_mod_dir);
     HMODULE h = LoadLibraryExW(dll, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
-    if (!h) { log_line("prism.dll not found in the DBZ3Access folder"); return 0; }
+    if (!h) { log_line("prism.dll not found in the Budokai3Access folder"); return 0; }
     fn_config_init config_init = (fn_config_init)GetProcAddress(h, "prism_config_init");
     fn_init init = (fn_init)GetProcAddress(h, "prism_init");
     fn_acquire_best acquire_best = (fn_acquire_best)GetProcAddress(h, "prism_registry_acquire_best");

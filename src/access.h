@@ -1,13 +1,13 @@
-/* Shared declarations for DBZ3Access. */
+/* Shared declarations for Budokai3Access. */
 #pragma once
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdint.h>
 
-#define MOD_VERSION "0.3.0"
+#define MOD_VERSION "1.0.0"
 
 extern wchar_t g_game_dir[MAX_PATH];   /* folder of dbz3.exe, with trailing backslash */
-extern wchar_t g_mod_dir[MAX_PATH];    /* g_game_dir + "DBZ3Access\" */
+extern wchar_t g_mod_dir[MAX_PATH];    /* g_game_dir + "Budokai3Access\" */
 
 void log_line(const char *fmt, ...);
 char *to_utf8(const wchar_t *w);       /* malloc'd; caller frees */
@@ -63,7 +63,7 @@ int  guest_hook(uint32_t guest, void *detour, void **orig);
 void guest_hooks_apply(void);
 void tools_init(void);
 void tools_shutdown(void);
-void tools_poll(void);                              /* RE commands from DBZ3Access\cmd.txt */
+void tools_poll(void);                              /* RE commands from Budokai3Access\cmd.txt */
 
 /* pad.c */
 void pad_init(void);

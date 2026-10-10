@@ -1,11 +1,11 @@
 /*
- * DBZ3Access loader. This DLL is named version.dll and sits next to dbz3.exe.
+ * Budokai3Access loader. This DLL is named version.dll and sits next to dbz3.exe.
  * Windows loads it instead of the system copy; it passes the version
  * functions through to the real version.dll and loads the mod itself,
- * DBZ3Access\DBZ3Access.dll.
+ * Budokai3Access\Budokai3Access.dll.
  *
- * For development, if DBZ3Access\devreload.txt exists, the loader watches
- * DBZ3Access.dll and swaps in a rebuilt copy while the game keeps running.
+ * For development, if Budokai3Access\devreload.txt exists, the loader watches
+ * Budokai3Access.dll and swaps in a rebuilt copy while the game keeps running.
  */
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -42,10 +42,10 @@ static FILETIME mtime(const wchar_t *p) {
 
 static HMODULE load_core(int dev, unsigned n) {
     wchar_t src[MAX_PATH], run[MAX_PATH];
-    swprintf(src, MAX_PATH, L"%lsDBZ3Access.dll", g_dir);
+    swprintf(src, MAX_PATH, L"%lsBudokai3Access.dll", g_dir);
     if (!dev) return LoadLibraryW(src);
-    /* Load a copy so the build can overwrite DBZ3Access.dll. */
-    swprintf(run, MAX_PATH, L"%lsDBZ3Access_run%u.dll", g_dir, n);
+    /* Load a copy so the build can overwrite Budokai3Access.dll. */
+    swprintf(run, MAX_PATH, L"%lsBudokai3Access_run%u.dll", g_dir, n);
     if (!CopyFileW(src, run, FALSE)) return NULL;
     return LoadLibraryW(run);
 }
@@ -53,13 +53,13 @@ static HMODULE load_core(int dev, unsigned n) {
 static DWORD WINAPI loader_thread(LPVOID unused) {
     (void)unused;
     wchar_t src[MAX_PATH], flag[MAX_PATH], old[MAX_PATH];
-    swprintf(src, MAX_PATH, L"%lsDBZ3Access.dll", g_dir);
+    swprintf(src, MAX_PATH, L"%lsBudokai3Access.dll", g_dir);
     swprintf(flag, MAX_PATH, L"%lsdevreload.txt", g_dir);
     int dev = GetFileAttributesW(flag) != INVALID_FILE_ATTRIBUTES;
     wchar_t logp[MAX_PATH];
-    swprintf(logp, MAX_PATH, L"%lsDBZ3Access.log", g_dir);
+    swprintf(logp, MAX_PATH, L"%lsBudokai3Access.log", g_dir);
     DeleteFileW(logp);
-    for (unsigned i = 0; i < 64; i++) { swprintf(old, MAX_PATH, L"%lsDBZ3Access_run%u.dll", g_dir, i); DeleteFileW(old); }
+    for (unsigned i = 0; i < 64; i++) { swprintf(old, MAX_PATH, L"%lsBudokai3Access_run%u.dll", g_dir, i); DeleteFileW(old); }
     unsigned n = 0;
     HMODULE core = load_core(dev, n);
     if (!core) return 0;
@@ -93,7 +93,7 @@ BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID reserved) {
         GetModuleFileNameW(NULL, g_dir, MAX_PATH);
         wchar_t *slash = wcsrchr(g_dir, L'\\');
         if (slash) slash[1] = 0;
-        wcscat(g_dir, L"DBZ3Access\\");
+        wcscat(g_dir, L"Budokai3Access\\");
         CloseHandle(CreateThread(NULL, 0, loader_thread, NULL, 0, NULL));
     }
     return TRUE;

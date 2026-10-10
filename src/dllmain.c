@@ -1,8 +1,8 @@
 /*
- * DBZ3Access - screen reader support for the Dragon Ball Z Budokai 3 HD
+ * Budokai3Access - screen reader support for the Dragon Ball Z Budokai 3 HD
  * Collection PC port (dbz3.exe, ReXGlue recompilation).
  *
- * This is DBZ3Access\DBZ3Access.dll, started by the loader (plugin.c,
+ * This is Budokai3Access\Budokai3Access.dll, started by the loader (plugin.c,
  * installed as rexgpu-xenos.dll), which calls core_start and, when
  * reloading during development, core_stop.
  */
@@ -85,10 +85,22 @@ static DWORD WINAPI mod_thread(LPVOID unused) {
     if (!getenv("DBZ3A_NOGAME")) game_init();
     if (guest_hooks_bad()) { selfcheck_fail("the game's code is not where it expects"); return 0; }
     guest_hooks_apply();
-    speak(L"DBZ 3 Access loaded", 0);
+    /* The game window appears after the code is ready, and the screen reader
+     * cuts off anything said before it announces the window: wait until the
+     * window has had focus for a second. */
+    DWORD focus_since = 0;
+    int announced = 0;
     int down[NKEYS] = { 0 };
     while (!g_stop) {
         Sleep(16);
+        if (!announced) {
+            if (!game_has_focus()) focus_since = 0;
+            else if (!focus_since) focus_since = GetTickCount();
+            else if (GetTickCount() - focus_since > 1000) {
+                speak(L"Budokai 3 Access loaded", 0);
+                announced = 1;
+            }
+        }
         if (game_has_focus()) {
             int shift = GetAsyncKeyState(VK_SHIFT) < 0, ctrl = GetAsyncKeyState(VK_CONTROL) < 0;
             for (int i = 0; i < NKEYS; i++) {
@@ -111,19 +123,19 @@ static HANDLE g_once;
 
 __declspec(dllexport) void core_start(void) {
     wchar_t name[64];
-    swprintf(name, 64, L"DBZ3Access_running_%lu", GetCurrentProcessId());
+    swprintf(name, 64, L"Budokai3Access_running_%lu", GetCurrentProcessId());
     g_once = CreateMutexW(NULL, FALSE, name);
     if (g_once && GetLastError() == ERROR_ALREADY_EXISTS) { CloseHandle(g_once); g_once = NULL; return; }
     GetModuleFileNameW(NULL, g_game_dir, MAX_PATH);
     wchar_t *slash = wcsrchr(g_game_dir, L'\\');
     if (slash) slash[1] = 0;
-    swprintf(g_mod_dir, MAX_PATH, L"%lsDBZ3Access\\", g_game_dir);
+    swprintf(g_mod_dir, MAX_PATH, L"%lsBudokai3Access\\", g_game_dir);
     CreateDirectoryW(g_mod_dir, NULL);
     InitializeCriticalSection(&g_loglock);
     wchar_t logpath[MAX_PATH];
-    swprintf(logpath, MAX_PATH, L"%lsDBZ3Access.log", g_mod_dir);
+    swprintf(logpath, MAX_PATH, L"%lsBudokai3Access.log", g_mod_dir);
     g_logf = _wfopen(logpath, L"a");
-    log_line("DBZ3Access " MOD_VERSION " starting");
+    log_line("Budokai3Access " MOD_VERSION " starting");
     speech_init();
     g_stop = 0;
     g_thread = CreateThread(NULL, 0, mod_thread, NULL, 0, NULL);
@@ -143,7 +155,7 @@ __declspec(dllexport) void core_stop(void) {
     for (int i = 0; i < 300 && g_inflight; i++) Sleep(10);
     Sleep(200);
     speech_shutdown();
-    log_line("DBZ3Access stopped for reload");
+    log_line("Budokai3Access stopped for reload");
     fclose(g_logf); g_logf = NULL;
     DeleteCriticalSection(&g_loglock);
 }

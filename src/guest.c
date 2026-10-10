@@ -2,9 +2,9 @@
  * Guest memory access, hooks on recompiled game functions, and the
  * reverse-engineering tools used to build this mod.
  *
- * Tools are driven by writing a line to DBZ3Access\cmd.txt while the game
- * runs (the file is deleted once read); results go to DBZ3Access.log or
- * DBZ3Access\counts.txt:
+ * Tools are driven by writing a line to Budokai3Access\cmd.txt while the game
+ * runs (the file is deleted once read); results go to Budokai3Access.log or
+ * Budokai3Access\counts.txt:
  *   count arm          hook every game function with a call counter
  *   count reset        zero the counters
  *   count dump         write counters to counts.txt
