@@ -1,20 +1,33 @@
-DBZ 3 Access, test build 0.4.0
+DBZ 3 Access 1.0
 
-A screen reader mod for the Dragon Ball Z Budokai 3 HD Collection PC port
-(dbz3.exe). It speaks through your screen reader using Prism, and falls back
-to the Windows voice if no screen reader is found.
+A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
+your screen reader (NVDA, JAWS and others), or the Windows voice if none is
+running.
 
-This is an early test build. It is already installed in this game folder.
+
+WHAT YOU NEED
+
+- The Budokai 3 HD PC port by NovaPowers, version 1.4.2.3:
+  https://github.com/novapowers0/DBZ-Budokai-3-HD-Collection
+- Your own copy of the game, USA version, set up as the port explains.
+  Get the game running first, then add this mod.
+
+
+INSTALL
+
+1. Unzip DBZ3Access-1.0.zip into the game folder, the folder with dbz3.exe.
+2. Run "Play DBZ3 Access.exe" from that folder.
+
+That's it. Always start the game with "Play DBZ3 Access.exe". The port's
+launcher opens; press Enter to play. You should hear "DBZ 3 Access loaded".
 
 
 STARTING THE GAME
 
-Run "Play DBZ3 Access.exe" in the game folder (make a desktop shortcut to
-it if you like). It checks the mod is installed, repairs it if a port
-update replaced its loader, and starts the game. The port's launcher opens;
-press Enter to play. You should hear "DBZ 3 Access loaded". On the first menu the mod
-says New Game, Load Game or Continue as you move (Continue goes back to the
-main menu).
+"Play DBZ3 Access.exe" checks the mod is installed, repairs it if a port
+update replaced its loader, and starts the game. Make a desktop shortcut to
+it if you like. On the first menu the mod says New Game, Load Game or
+Continue as you move (Continue goes back to the main menu).
 
 
 WHAT SHOULD SPEAK
@@ -24,7 +37,7 @@ WHAT SHOULD SPEAK
   names when a fighter uses a skill, and story and tutorial text. Budokai 3
   draws all its text as pictures, so the mod carries the words of every text
   picture on the disc, read with text recognition. A few may have small
-  mistakes; tell me any you hear.
+  mistakes; please report any you hear.
 - Stage select: the stage under the cursor and its place in the list, for
   example "Plains, 5 of 6"; "Random stage" for the question mark. Only
   stages you have unlocked are in the list.
@@ -210,56 +223,35 @@ F7 (achievements) and F10 (developer overlay), so the mod stays off those.
 
 NOT DONE YET
 
-- Which item is highlighted in the World Tournament level list.
 - The Dragon Radar and the map screen are not read yet.
-- Dragon Rush.
 - A sound for dodging.
 
 
-ORIGINAL MUSIC (OG MUSIC MOD)
+ORIGINAL MUSIC (OPTIONAL, NOT INCLUDED)
 
-The HD Collection replaced the original American soundtrack (Kenji
-Yamamoto's score from the PS2 release). The game port's own mod system can
-put it back with an "og_music" mod, which you build from your own PS2 copy
-of Budokai 3 (USA). It is installed here as mods\og_music. It keeps the HD
-voices and sound and swaps in the 63 original music tracks: menus, story and
-Dragon Universe music, every stage theme, and the opening song with the PS2
-opening movie. Two tracks that only exist in the HD release stay as they are.
-
-Mods only work when the game data is extracted, so the HD game's data is now
-in the us folder next to dbz3.exe with default.xex, instead of being played
-from the ISO. To go back to the HD music, untick OG Music in the launcher's
-Mods tab (or delete the mods\og_music folder).
-
-To build it again (for example on another computer): put the extracted HD
-data in us\ next to dbz3.exe, take USR\ADX_USA.AFS and USR\OPENING.SFD from
-your PS2 disc, and run
-  python DBZ3Access-src\tools\build_og_music.py <game folder> ADX_USA.AFS OPENING.SFD
+The HD Collection replaced the original American soundtrack from the PS2
+release. If you own the PS2 version of Budokai 3 (USA), you can put the old
+music back yourself with the build_og_music.py script in the tools folder of
+the source: https://github.com/BlindChallengerX/DBZ3Access
+The music is not included here and the mod works the same without it.
 
 
 REMOVING THE MOD
 
-The mod is started by rexgpu-xenos.dll in the game folder, a small wrapper
-around the port's graphics plugin, which is kept as
-rexgpu-xenos-original.dll. To remove the mod, delete rexgpu-xenos.dll and
-rename rexgpu-xenos-original.dll back to rexgpu-xenos.dll. The DBZ3Access
-folder can stay or go; the game does not use it without the wrapper.
+In the game folder, delete rexgpu-xenos.dll, then rename
+rexgpu-xenos-original.dll to rexgpu-xenos.dll. You can also delete the
+DBZ3Access folder and "Play DBZ3 Access.exe".
 
-Earlier builds used a file named version.dll instead. Windows Defender
-flagged that one by mistake (Trojan:Win32/Bearfoos.B!ml, a machine-learning
-guess about files named like Windows system files), so it is no longer
-used; if you still have a version.dll in the game folder, delete it.
 
-Port updates (and the port launcher's Repair install) put the port's own
-rexgpu-xenos.dll back. That is expected: "Play DBZ3 Access.exe" notices,
-keeps the new file as rexgpu-xenos-original.dll and puts the mod's loader
-back in place, every time you start the game with it. What it did is in
-DBZ3Access\launch.log.
+IF SOMETHING GOES WRONG
 
-If a port update changes the port's internals, the mod checks itself when
-the game starts. If something is not where it expects, it says "DBZ 3
-Access: ... The mod has switched itself off so the game keeps running" and
-the game plays on without it, instead of crashing. Then look for a mod
+Port updates put the port's own rexgpu-xenos.dll back. That is expected:
+"Play DBZ3 Access.exe" puts the mod back each time you start the game with
+it.
+
+If a port update changes things the mod relies on, the mod switches itself
+off and says so, and the game keeps running without it. Then look for a mod
 update.
 
-If something goes wrong, the log is DBZ3Access\DBZ3Access.log.
+The mod's log is DBZ3Access\DBZ3Access.log. Please include it when you
+report a problem.
