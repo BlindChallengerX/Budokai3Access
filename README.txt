@@ -18,6 +18,9 @@ INSTALL
 1. Unzip Budokai3Access-1.0.zip into the game folder, the folder with dbz3.exe.
 2. Run "Play Budokai 3 Access.exe" from that folder.
 
+If Windows says "Windows protected your PC", choose "More info", then
+"Run anyway". This shows for new programs that are not from a big company.
+
 That's it. Always start the game with "Play Budokai 3 Access.exe". The port's
 launcher opens; press Enter to play. You should hear "Budokai 3 Access loaded".
 
