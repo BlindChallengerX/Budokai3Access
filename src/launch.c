@@ -10,7 +10,8 @@
  *      product name), it is a new port file, so it becomes the original;
  *   2. puts the current loader (Budokai3Access\loader\rexgpu-xenos.dll) in place
  *      if it is missing or different;
- *   3. makes sure dbz3_user.toml has "audio_maxqframes = 3" (see below);
+ *   3. makes sure dbz3_user.toml has "audio_maxqframes = 3" and keyboard
+ *      controls, and once switches controllers to SDL (see below);
  *   4. starts dbz3.exe, unless run with --repair (used by the build scripts).
  * It only copies and renames files inside the game folder. What it did is
  * written to Budokai3Access\launch.log.
@@ -137,6 +138,61 @@ static void port_settings(void) {
     toml_default("mnk_mode", "true", L"keyboard controls");
 }
 
+/* Sets "key = value" in dbz3_user.toml, replacing the key's line or adding
+ * it at the end. */
+static void toml_set(const char *key, const char *value) {
+    wchar_t path[MAX_PATH];
+    swprintf(path, MAX_PATH, L"%lsdbz3_user.toml", g_dir);
+    char buf[16384]; size_t n = 0;
+    FILE *f = _wfopen(path, L"rb");
+    if (f) { n = fread(buf, 1, sizeof buf - 1, f); fclose(f); }
+    buf[n] = 0;
+    size_t klen = strlen(key);
+    char *line = NULL;
+    for (char *p = buf; *p; ) {
+        if (!strncmp(p, key, klen) && (p[klen] == ' ' || p[klen] == '=')) { line = p; break; }
+        char *nl = strchr(p, '\n');
+        if (!nl) break;
+        p = nl + 1;
+    }
+    f = _wfopen(path, L"wb");
+    if (!f) return;
+    if (line) {
+        char *end = strchr(line, '\n');
+        if (end && end > line && end[-1] == '\r') end--;
+        fwrite(buf, 1, line - buf, f);
+        fprintf(f, "%s = %s", key, value);
+        if (end) fputs(end, f);                   /* rest of the file, from the line break on */
+        else fputs("\n", f);
+    } else {
+        fwrite(buf, 1, n, f);
+        if (n && buf[n - 1] != '\n') fputs("\n", f);
+        fprintf(f, "%s = %s\n", key, value);
+    }
+    fclose(f);
+}
+
+/* Controllers: the port reads pads through XInput by default, which cannot
+ * see PlayStation controllers. Its SDL backend reads PS4/PS5 and Xbox pads.
+ * dbz3_input_backend overrides input_backend (and the port saves
+ * input_backend from it), so both are set. Done once, marked by
+ * Budokai3Access\controller.txt, so a player who picks XInput again in the
+ * port's launcher keeps it. */
+static void controller_backend(void) {
+    wchar_t mark[MAX_PATH];
+    swprintf(mark, MAX_PATH, L"%lsBudokai3Access\\controller.txt", g_dir);
+    if (exists(mark)) return;
+    toml_set("input_backend", "\"sdl\"");
+    toml_set("dbz3_input_backend", "\"sdl\"");
+    FILE *f = _wfopen(mark, L"wb");
+    if (f) {
+        fputs("Budokai 3 Access switched the port to SDL controller support once (PS4/PS5 and Xbox controllers).\r\n"
+              "Delete this file to have it switched again.\r\n", f);
+        fclose(f);
+    }
+    logw(L"set the controller backend to SDL (PlayStation controllers)");
+}
+
 /* The mod only knows the English game text. The port's game language
  * (dbz3_language, Xbox ids: 1 English, 2 Japanese, 3 German, 4 French,
  * 5 Spanish, 6 Italian) defaults to English; if the player picked another in
@@ -160,12 +216,7 @@ static void english_check(void) {
     swprintf(msg, 400, L"The game language is set to %ls. Budokai 3 Access can only read the game in English.\n\n"
              L"Switch the game to English?", (lang >= 2 && lang <= 6) ? names[lang] : L"another language");
     if (MessageBoxW(NULL, msg, L"Budokai 3 Access", MB_YESNO | MB_ICONQUESTION) != IDYES) return;
-    f = _wfopen(path, L"wb");
-    if (!f) return;
-    fwrite(buf, 1, line - buf, f);
-    fputs("dbz3_language = 1", f);
-    if (end) fputs(end, f);                       /* rest of the file, from the line break on */
-    fclose(f);
+    toml_set("dbz3_language", "1");
     logw(L"set dbz3_language = 1 (English)");
 }
 
@@ -183,6 +234,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmd, int show) {
     if (!exists(exe)) { fail(L"Put Play Budokai 3 Access.exe in the game folder, next to dbz3.exe."); return 1; }
     int ok = repair();
     port_settings();
+    controller_backend();
     if (repair_only) return ok ? 0 : 1;
     english_check();
     STARTUPINFOW si; PROCESS_INFORMATION pi;

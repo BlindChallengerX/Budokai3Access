@@ -11,11 +11,11 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "Budokai 3 Access (open source accessibility mod)"
       VALUE "FileDescription", "Budokai 3 Access loader: screen reader mod for the DBZ Budokai 3 HD port (wraps the port's graphics plugin, rexgpu-xenos-original.dll)"
-      VALUE "FileVersion", "1.0.1"
+      VALUE "FileVersion", "1.0.2"
       VALUE "InternalName", "rexgpu-xenos (Budokai 3 Access wrapper)"
       VALUE "OriginalFilename", "rexgpu-xenos.dll"
       VALUE "ProductName", "Budokai 3 Access"
-      VALUE "ProductVersion", "1.0.1"
+      VALUE "ProductVersion", "1.0.2"
     END
   END
   BLOCK "VarFileInfo"

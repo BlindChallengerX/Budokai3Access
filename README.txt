@@ -1,4 +1,4 @@
-Budokai 3 Access 1.0.1
+Budokai 3 Access 1.0.2
 
 A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is
@@ -17,7 +17,7 @@ WHAT YOU NEED
 
 INSTALL
 
-1. Unzip Budokai3Access-1.0.1.zip into the game folder, the folder with dbz3.exe.
+1. Unzip Budokai3Access-1.0.2.zip into the game folder, the folder with dbz3.exe.
 2. Run "Play Budokai 3 Access.exe" from that folder.
 
 If Windows says "Windows protected your PC", choose "More info", then
@@ -49,6 +49,23 @@ Right stick click (R3)   K
 In menus, Space (A) picks and P (Y) goes back. Where the mod names
 controller buttons, for example in Dragon Rush, X is L, Y is P, A is Space
 and B is Backspace. You can change the keys in the port's launcher.
+
+
+PLAYSTATION CONTROLLERS
+
+PS4 and PS5 controllers work. The port normally reads only Xbox
+controllers, so the first time you run "Play Budokai 3 Access.exe" it
+switches the port to its SDL controller support, which reads PlayStation
+and Xbox controllers. Where the mod names Xbox buttons: A is Cross, B is
+Circle, X is Square, Y is Triangle, LB/RB are L1/R1, Back is Share or
+Create, and L3/R3 are the stick clicks.
+
+To set it by hand, close the game, open dbz3_user.toml in the game folder
+in Notepad and make sure these two lines read:
+input_backend = "sdl"
+dbz3_input_backend = "sdl"
+If you want the old Xbox-only mode back, choose XInput as the controller
+backend in the port's launcher; the mod will not switch it again.
 
 
 STARTING THE GAME
