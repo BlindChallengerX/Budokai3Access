@@ -1,0 +1,26 @@
+#include <winver.h>
+1 24 "og_music.manifest"
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "Budokai 3 Access (open source accessibility mod)"
+      VALUE "FileDescription", "Budokai 3 Original Music: rebuilds the PS2 soundtrack as a mod for the DBZ Budokai 3 HD port from your own PS2 disc"
+      VALUE "FileVersion", "1.0"
+      VALUE "InternalName", "og_music"
+      VALUE "OriginalFilename", "Budokai 3 Original Music.exe"
+      VALUE "ProductName", "Budokai 3 Original Music"
+      VALUE "ProductVersion", "1.0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END
