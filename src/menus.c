@@ -38,6 +38,8 @@ static Menu k_menus[] = {
     { "# CHARASEL #", NULL, 0, 0, 1, 3, { "Normal", "Custom", "Edit Skills" }, -1 },
     /* Dueling: who plays. */
     { "# VS MODE #", "VS CHARASEL", 0, 0x53, 1, 4, { "1 P versus computer", "1 P versus 2 P", "Computer versus 2 P", "Computer versus computer" }, -1 },
+    /* Dragon Arena: who fights. */
+    { "# ARENA MODE #", "# ARENA CHARASE", 0, 0x35, 1, 3, { "1 P versus computer", "1 P versus 2 P", "Computer versus computer" }, -1 },
     /* Dragon Universe title menu. */
     { "# STR_TITLE #", "# DRAW2 #", 0x8247a8d0, 0xb0, 4, 4, { "New Story", "Continue", "Reset Character", "Bonus" }, -1 },
     /* Edit Skills main menu (main menu, Edit Skills). */
@@ -329,19 +331,36 @@ static const char *char_name(int id, char *buf, size_t cap) {
     return buf;
 }
 
+/* Dragon Arena uses the same select with its own data: one of the
+ * "# ARENA CHARASE" tasks has work with the stats at +0x16, level +0x1d,
+ * experience +0x28 and to next level +0x2c. */
+typedef struct { uint32_t w; int stats, level, exp, next; } StrSel;
+static int strsel_src(StrSel *s) {
+    if (task_running("# STR SELECT #")) {
+        *s = (StrSel){ task_work("# STR SELECT #"), 0x5c, 0x63, 0x64, 0x68 };
+        return s->w && guest_ok(s->w + 0x5c, 0x10);
+    }
+    uint32_t w[4];
+    int n = task_works("# ARENA CHARASE", w, 4);
+    for (int i = 0; i < n; i++)
+        if (w[i] && guest_ok(w[i] + 0x10, 0x20)) { *s = (StrSel){ w[i], 0x16, 0x1d, 0x28, 0x2c }; return 1; }
+    return 0;
+}
+
 static int strsel_say(int interrupt, int details) {
-    uint32_t sw = task_work("# STR SELECT #"), cw = task_work("CHARASEL");
-    if (!sw || !cw || !guest_ok(sw + 0x5c, 0x10) || !guest_ok(cw + 4, 1)) return 0;
+    StrSel s;
+    uint32_t cw = task_work("CHARASEL");
+    if (!strsel_src(&s) || !cw || !guest_ok(cw + 4, 1)) return 0;
     int id = g8(cw + 4);
     char name[64], buf[300];
     if (!char_name(id, name, sizeof name)) snprintf(name, sizeof name, "Character %d", id);
-    int n = snprintf(buf, sizeof buf, "%s, level %d", name, g8(sw + 0x63));
+    int n = snprintf(buf, sizeof buf, "%s, level %d", name, g8(s.w + s.level));
     if (details) {
         static const char *k_stats[] = { "Health", "Ki", "Attack", "Guard", "Arts", "Ability", "Com" };
         n += snprintf(buf + n, sizeof buf - n, ". Experience %d, %d to next level.",
-                      (int)g32(sw + 0x64), (int)g32(sw + 0x68));
+                      (int)g32(s.w + s.exp), (int)g32(s.w + s.next));
         for (int i = 0; i < 7; i++)
-            n += snprintf(buf + n, sizeof buf - n, " %s %d%s", k_stats[i], g8(sw + 0x5c + (uint32_t)i), i < 6 ? "," : ".");
+            n += snprintf(buf + n, sizeof buf - n, " %s %d%s", k_stats[i], g8(s.w + s.stats + (uint32_t)i), i < 6 ? "," : ".");
     }
     speak_utf8(buf, interrupt);
     g_strsel_last = id;
@@ -352,7 +371,7 @@ static int strsel_say(int interrupt, int details) {
  * spoken once the cursor has rested 150 ms. */
 static void strsel_poll(void) {
     static int seen = -1; static DWORD since;
-    uint32_t cw = task_running("# STR SELECT #") ? task_work("CHARASEL") : 0;
+    uint32_t cw = task_running("# STR SELECT #") || task_running("# ARENA CHARASE") ? task_work("CHARASEL") : 0;
     if (!cw || !guest_ok(cw + 4, 1)) { g_strsel_last = seen = -1; return; }
     int id = g8(cw + 4);
     if (id != seen) { seen = id; since = GetTickCount(); }
@@ -448,7 +467,7 @@ static void cs_say(int k, int id, int interrupt) {
 
 static void cs_poll(void) {
     uint32_t w[2];
-    int n = task_running("# STR SELECT #") ? 0 : task_works("CHARASEL", w, 2);
+    int n = task_running("# STR SELECT #") || task_running("# ARENA CHARASE") ? 0 : task_works("CHARASEL", w, 2);
     g_cs_any = n > 0;
     if (!n) { g_cs_last[0] = g_cs_last[1] = g_cs_seen[0] = g_cs_seen[1] = -1; g_cs_name[0][0] = g_cs_name[1][0] = 0; return; }
     text_mute_pack_except(CS_NAMES, 25);      /* names come from here; "Computer" still read */
@@ -675,7 +694,8 @@ static int wt_say(int interrupt) {
 }
 
 static void wt_poll(void) {
-    uint32_t w = task_running("CHARASEL") ? 0 : task_work("# TOUR MODE #");
+    if (task_running("CHARASEL")) return;     /* keep the state: no repeat of the course after picking */
+    uint32_t w = task_work("# TOUR MODE #");
     if (!w || !guest_ok(w + 0xaf, 2)) { g_wt_step = g_wt_val = g_wt_locked = -1; return; }
     text_mute_pack(WT_SHEET);
     text_mute_pack2(WT_COMMENTS);
@@ -685,6 +705,35 @@ static void wt_poll(void) {
     if (step != g_wt_step || val != g_wt_val) { g_wt_step = step; g_wt_val = val; g_wt_locked = -1; g_wt_since = GetTickCount(); }
     /* wait for the comment that follows the cursor (locked or not) before speaking */
     if (g_wt_locked < 0 && GetTickCount() - g_wt_since >= 250) { g_wt_locked = locked; wt_say(1); }
+}
+
+/* ---------- Shenron's wishes (Dragon Universe, all 7 Dragon Balls) ----------
+ * Task "Shenron Msg" shows the choices; object *(8243a260): +0x14 number of
+ * wishes, +0x18 capsule ID of each (-1 none), +0x24 cursor. The capsule
+ * name pictures are muted while it runs (the text reader would say all of
+ * them at once); A picks the wish, and its capsule card follows. */
+#define SHENRON_OBJ 0x8243a260u
+static int g_wish = -1;
+
+static int wish_say(int interrupt) {
+    uint32_t o = g32(SHENRON_OBJ);
+    if (!task_running("Shenron Msg") || !o || !guest_ok(o + 0x14, 0x14)) return 0;
+    int n = (int)g32(o + 0x14), c = (int)g32(o + 0x24);
+    if (n < 1 || n > 3 || c < 0 || c >= n) return 0;
+    int id = (int)g32(o + 0x18 + 4 * c);
+    speakf(interrupt, "%s, %d of %d", id >= 0 ? capsule_name(id) : "Wish", c + 1, n);
+    return 1;
+}
+
+static void wish_poll(void) {
+    uint32_t o = g32(SHENRON_OBJ);
+    if (!task_running("Shenron Msg") || !o || !guest_ok(o + 0x14, 0x14)) { g_wish = -1; return; }
+    text_mute_pack(CAPSULE_NAMES);
+    int c = (int)g32(o + 0x24);
+    if (c == g_wish) return;
+    if (g_wish < 0) speakf(0, "Choose a wish, up and down, A to choose.");
+    g_wish = c;
+    wish_say(0);
 }
 
 void menus_poll(void) {
@@ -708,6 +757,7 @@ void menus_poll(void) {
     text_mute_pack(task_running("ESS MAIN") ? CAPSULE_NAMES : (g_pause_row >= 0 || g_layout >= 0 || yes_no) ? PAUSE_TEXTS : 0);
     text_mute_all(g_skill_row >= 0 || g_strsel_last >= 0 || task_running("# MAIN MENU #"));   /* main menu: just the mode, not Goku's comments */   /* story select: its reader says name, level, stats */
     cs_poll();                 /* after the mute above: it mutes the name pictures itself */
+    wish_poll();               /* after the mute above too */
     nl_poll();
     opt_poll();
     ctl_poll();                /* after opt_poll: both run under "Option Main" */
@@ -716,11 +766,12 @@ void menus_poll(void) {
 
 /* F5: say the highlighted item of any open menu. */
 int menus_read_current(void) {
+    if (g_wish >= 0) return wish_say(1);
     if (g_stage_last >= 0) return stage_say(1);
     if (g_bonus_last >= 0) return bonus_say(1);
     if (g_nl >= 0) return nl_say(1);
     if (g_ctl_row >= 0) return ctl_say(1, 1);
-    if (g_wt_step >= 0) return wt_say(1);
+    if (g_wt_step >= 0 && wt_say(1)) return 1;   /* not during its character select */
     if (g_opt_item >= 0) return opt_say(1);
     if (g_sysq >= 0) return sysq_say(1);
     if (g_strsel_last >= 0) return strsel_say(1, 1);

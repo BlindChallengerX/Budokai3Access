@@ -114,7 +114,11 @@ static int geometry(float *dist, float *side, float *dy) {
  * Stage, the same numbers as stage select. Other stages have walls, or (Cell
  * Ring) a ring of a size never measured, so no edge sound there. */
 #define STAGE_NUM  0x823a3dc0u
-static int ring_stage(void) { return (int)g32(STAGE_NUM) == 0; }
+/* The World Tournament's Cell Games course leaves 823a3dc0 at 0 but has the
+ * stage in the first word of the same block (8 = Cell Ring, walls at about
+ * 185 units, no ring out); a normal tournament and duels keep both at 0. */
+#define STAGE_NUM2 0x823a3d80u
+static int ring_stage(void) { return (int)g32(STAGE_NUM) == 0 && (int)g32(STAGE_NUM2) == 0; }
 #define EDGE_SOUND 150.0f      /* thump starts this close: a knockback can throw a fighter over 100 units */
 static float s_edge_dist = 1e9f, s_edge_pan;        /* your nearest edge, for the audio thread */
 
@@ -139,7 +143,10 @@ static void edge_poll(int active) {
     float d, nx, nz;
     V3 me = rdv(my_rec() + 0x60);
     static int logged = -1;
-    if (active && logged != (int)g32(STAGE_NUM)) { logged = (int)g32(STAGE_NUM); log_line("fight on stage %d", logged); }
+    if (active && logged != (int)(g32(STAGE_NUM) | g32(STAGE_NUM2) << 8)) {
+        logged = (int)(g32(STAGE_NUM) | g32(STAGE_NUM2) << 8);
+        log_line("fight on stage %d (block start %d)", (int)g32(STAGE_NUM), (int)g32(STAGE_NUM2));
+    }
     if (!active) logged = -1;
     if (!active || !ring_stage() || !edge_info(me, &d, &nx, &nz)) {
         EnterCriticalSection(&g_lock); s_edge_dist = 1e9f; LeaveCriticalSection(&g_lock);

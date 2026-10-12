@@ -136,7 +136,11 @@ WHAT SHOULD SPEAK
   without the comments.
 - World Tournament: the course and its rounds, for example "Adept, 4 rounds,
   locked, 2 of 3" (Cell Games joins the list once unlocked), then "Number of
-  players: 1". The announcer's lines are not read.
+  players: 1". The announcer's lines are not read. The Cell Games arena has
+  walls instead of a ring, so there is no edge knock there.
+- Dragon Arena (once unlocked): who fights, for example "1 P versus
+  computer, 1 of 3", then the character select with name and level, as in
+  Dragon Universe (F5 adds experience and the seven stats).
 - Options: the category or setting under the cursor and its value, for
   example "COM Level: Weak" or "Music Volume: 100 percent", and the new value
   when you change it with left or right. F5 repeats it.
@@ -233,12 +237,27 @@ The marker list calls them "Hidden spot", or "Dragon Ball spot" for the
 ones that look like Dragon Balls. A spot leaves the list once collected,
 and each one only lasts for its part of the story.
 
+When you find a Dragon Ball the mod says how many you have, for example
+"Dragon Balls: 3 of 7", and F8 starts with the count. With all seven,
+Shenron appears at a later story event (not in every part of the story).
+His wishes are read one at a time as you move: "Choose a wish, up and
+down, A to choose", then for example "Memories of Goku, 2 of 3". F5
+repeats the highlighted wish.
+
 The mod keeps a guide target, at first the story event (the red dot on the
 game's map); its name starts with "Story". A beep repeats from the target's
 side: high when it is ahead of you, low when it is behind you, brighter when
 you are heading straight at it, and faster as you get closer. Turn until the
 beep is high, bright and centred, then fly forward. When it is close enough
 you hear "Guide target in Ki Search range".
+
+Sometimes the story branches and the map has two or more red dots (for
+example on a second run of Goku's story, after the Spirit Bomb on Kid Buu:
+carry on the Z story or go to the GT part). The guide then says how many
+story events there are, targets the nearest, and names the others, for
+example "2 story events. Guide: Story, Plains, ... Also Story, Kami's
+Lookout, 2 of 9, F5 or R3 to choose". Story events always come first in
+the F5 list, so F5 switches between them.
 
 After a story battle: the Battle Estimation is spoken as one summary (base
 experience, each scored item with its points, and the total); F5 repeats
@@ -263,9 +282,10 @@ The map wraps around: fly far enough one way and you come back from the
 other side. Distances and directions take the short way round.
 
 In Dragon Universe the keys do this:
-F5          Next marker as the guide target, nearest first (Shift+F5:
-            previous). It says the name, distance and which way to turn,
-            for example "2 of 10, Kame House, 5189 units, turn left 40".
+F5          Next marker as the guide target: story events first, then the
+            rest, nearest first (Shift+F5: previous). It says the name,
+            distance and which way to turn, for example
+            "2 of 10, Kame House, 5189 units, turn left 40".
 F6          Where the guide target is now.
 F8          The place you are in and every marker within 3000 units.
 Shift+F6    Guide beep off or on (the same switch as the fight tone).
@@ -312,9 +332,9 @@ NOT DONE YET
 ORIGINAL MUSIC (OPTIONAL, NOT INCLUDED)
 
 The HD Collection replaced the original American soundtrack from the PS2
-release. If you own the PS2 version of Budokai 3 (USA), you can put the old
-music back yourself with the build_og_music.py script in the tools folder of
-the source: https://github.com/BlindChallengerX/Budokai3Access
+release. If you own the PS2 version of Budokai 3 (USA), the separate
+program "Budokai 3 Original Music" puts the old music back from your disc:
+https://github.com/BlindChallengerX/Budokai3Access/releases/tag/music-1.0
 The music is not included here and the mod works the same without it.
 
 

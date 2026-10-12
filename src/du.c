@@ -15,8 +15,11 @@
  *   +0 type (16 bit) and sub, -1 = unused   +4 flags   +8 name ID
  *   +0xc radius   +0x10 x, y, z   +0x20 condition var/op/value
  *   +0x2c party member needed   +0x30 item needed   +0x34/+0x38 chapters
- * Flags & 3: Ki Search can pick it (821c2d00). Type 5400 is the story event
- * (the red dot on the map). The game's own check of the conditions is
+ * Flags & 3: Ki Search can pick it (821c2d00). The map (Y, 821c8268) draws
+ * every active record without flags 0xc0 as the same red dot: those are the
+ * story events. Places carry 0x40, hidden spots 0x80. The type is 5000 +
+ * 100 * kind + character number (Goku 5400, 5700, 5000, 5300...), so it is no
+ * test for a story event. The game's own check of the conditions is
  * 821c1c80; marker_active() does the same.
  *
  * Ki Search (RB) picks the active marker within 3000 units nearest the
@@ -33,7 +36,6 @@
 #define WORLD_PTR   0x82479770u
 #define PLACE_NAMES 0x26da3539u
 #define KI_RANGE    3000.0f
-#define TYPE_STORY  5400
 
 static uint32_t g_target;            /* record address of the guide target, 0 = none */
 static uint32_t g_last_ks;           /* last marker Ki Search picked */
@@ -116,6 +118,9 @@ static int marker_active(uint32_t r) {
  * Fly over it (within its radius) and press A. */
 static int is_hidden(uint32_t r) { return !(g32(r + 4) & 3); }
 
+/* A red dot on the game's map: a story event. */
+static int is_story(uint32_t r) { uint32_t f = g32(r + 4); return (f & 3) && !(f & 0xc0); }
+
 static void marker_name(uint32_t r, char *out, int cap) {
     /* Flags 0xe00 pick the object shown at the spot (821bd710); 0xa00 is
      * the blinking orb. The two spots with no object and flag 0x10 match
@@ -127,7 +132,7 @@ static void marker_name(uint32_t r, char *out, int cap) {
     }
     const char *n = text_lookup(PLACE_NAMES, g32(r + 8) + 2);
     if (!n || !strcmp(n, "???")) n = "unknown place";
-    if (g16(r) == TYPE_STORY) snprintf(out, cap, "Story, %s", n);
+    if (is_story(r)) snprintf(out, cap, "Story, %s", n);
     else snprintf(out, cap, "%s", n);
 }
 
@@ -160,7 +165,16 @@ static void direction_words(float ang, char *out, int cap) {
     else snprintf(out, cap, "turn %s %d", ang > 0 ? "right" : "left", a);
 }
 
-/* Active markers, nearest first. */
+/* Story events come before other markers; nearest first within each. */
+static int marker_before(uint32_t a, uint32_t b) {
+    int sa = is_story(a), sb = is_story(b);
+    if (sa != sb) return sa;
+    float da, db, ang;
+    bearing(a, &da, &ang); bearing(b, &db, &ang);
+    return da < db;
+}
+
+/* Active markers: story events first, then the rest, nearest first. */
 static int markers(uint32_t *out, int cap) {
     uint32_t T = table();
     int n = 0;
@@ -171,9 +185,7 @@ static int markers(uint32_t *out, int cap) {
     }
     for (int i = 1; i < n; i++)
         for (int j = i; j > 0; j--) {
-            float da, db, a;
-            bearing(out[j - 1], &da, &a); bearing(out[j], &db, &a);
-            if (db < da) { uint32_t t = out[j]; out[j] = out[j - 1]; out[j - 1] = t; } else break;
+            if (marker_before(out[j], out[j - 1])) { uint32_t t = out[j]; out[j] = out[j - 1]; out[j - 1] = t; } else break;
         }
     return n;
 }
@@ -193,17 +205,34 @@ static void describe(uint32_t r, int interrupt, const char *prefix) {
     speakf(interrupt, "%s%s, %d units, %s", prefix, name, (int)(d + 0.5f), dir);
 }
 
-/* The story event if there is one, otherwise the nearest marker. */
+/* The nearest story event if there is one, otherwise the nearest marker. */
 static uint32_t default_target(void) {
     uint32_t m[64];
     int n = markers(m, 64);
-    for (int i = 0; i < n; i++) if (g16(m[i]) == TYPE_STORY) return m[i];
     return n ? m[0] : 0;
+}
+
+/* Says the guide target and, when the story branches (two or more red dots,
+ * e.g. Z or GT after Kid Buu), names the other story events too. */
+static void announce_guide(void) {
+    uint32_t m[64];
+    int n = markers(m, 64), story = 0;
+    for (int i = 0; i < n; i++) if (is_story(m[i])) story++;
+    if (story < 2) { describe(g_target, 0, "Guide: "); return; }
+    char pre[48];
+    snprintf(pre, sizeof pre, "%d story events. Guide: ", story);
+    describe(g_target, 0, pre);
+    for (int i = 0; i < story; i++) {
+        if (m[i] == g_target) continue;
+        char name[96];
+        marker_name(m[i], name, sizeof name);
+        speakf(0, "Also %s, %d of %d, F5 or R3 to choose", name, i + 1, n);
+    }
 }
 
 static int target_valid(void) { return g_target && guest_ok(g_target, 0x40) && marker_active(g_target); }
 
-/* F5 / Shift+F5 in the field: next / previous marker, nearest first. */
+/* F5 / Shift+F5 in the field: next / previous marker (story events first). */
 void du_cycle(int dir) {
     uint32_t m[64];
     int n = markers(m, 64), cur = -1;
@@ -224,10 +253,23 @@ void du_describe(void) {
     describe(g_target, 1, "");
 }
 
+/* Dragon Balls held: bits 0..6 of the byte at table + 0x11e4 (the
+ * character's story block). All 7 makes Shenron appear at the next story
+ * event (script op 8215c1b0), which then clears it. -1 if unknown. */
+static int balls_held(void) {
+    uint32_t T = table();
+    if (!T || !guest_ok(T + 0x11e4, 1)) return -1;
+    int m = g8(T + 0x11e4) & 0x7f, n = 0;
+    for (; m; m >>= 1) n += m & 1;
+    return n;
+}
+
 /* F8 in the field: the place you are in and the markers in Ki Search range. */
 void du_status(void) {
     char buf[600], name[96];
     int n = 0;
+    int balls = balls_held();
+    if (balls > 0) n += snprintf(buf + n, sizeof buf - n, "Dragon Balls: %d of 7. ", balls);
     int place = place_here();
     if (place == HIDDEN_NAME) n += snprintf(buf + n, sizeof buf - n, "At a hidden spot: R B for Ki Search, then A. ");
     else if (place >= 0 && text_lookup(PLACE_NAMES, place + 2))
@@ -566,17 +608,25 @@ void du_poll(void) {
      * on while an event or battle is starting. */
     int field = du_in_field();
     DWORD now = GetTickCount();
+    /* A Dragon Ball picked up: say the count after Goku's line. */
+    static int last_balls = -1;
+    int balls = field ? balls_held() : -1;
+    if (balls >= 0) {
+        if (last_balls >= 0 && balls > last_balls)
+            speakf(0, balls == 7 ? "All 7 Dragon Balls!" : "Dragon Balls: %d of 7", balls);
+        last_balls = balls;
+    } else if (!task_running("# FLIGHT #")) last_balls = -1;
     if (!field) { g_was_field = 0; g_field_since = now; return; }
     if (now - g_field_since < 1500) return;
     if (!g_was_field) {
         if (!target_valid()) g_target = default_target();
         g_last_ks = 0;
-        if (g_target) describe(g_target, 0, "Guide: ");
+        if (g_target) announce_guide();
     }
     g_was_field = 1;
     if (g_target && !target_valid()) {
         g_target = default_target();
-        if (g_target) describe(g_target, 0, "Guide: ");
+        if (g_target) announce_guide();
     }
     /* Ki Search pick: the banner names it; add the distance and what to do. */
     uint32_t e = g32(FIELD + 0x1e4), ks = e ? g32(e + 0x20) : 0;
