@@ -1,4 +1,4 @@
-Budokai 3 Access 1.0.2
+Budokai 3 Access 1.0.3
 
 A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is
@@ -17,14 +17,16 @@ WHAT YOU NEED
 
 INSTALL
 
-1. Unzip Budokai3Access-1.0.2.zip into the game folder, the folder with dbz3.exe.
+1. Unzip Budokai3Access-1.0.3.zip into the game folder, the folder with dbz3.exe.
 2. Run "Play Budokai 3 Access.exe" from that folder.
 
 If Windows says "Windows protected your PC", choose "More info", then
 "Run anyway". This shows for new programs that are not from a big company.
 
-That's it. Always start the game with "Play Budokai 3 Access.exe". The port's
-launcher opens; press Enter to play. You should hear "Budokai 3 Access loaded".
+That's it. Always start the game with "Play Budokai 3 Access.exe". The game
+starts straight away and you should hear "Budokai 3 Access loaded". (The
+port's launcher is skipped, because screen readers cannot read it. See THE
+PORT'S SETTINGS below.)
 
 
 PLAYING WITH A KEYBOARD
@@ -48,7 +50,7 @@ Right stick click (R3)   K
 
 In menus, Space (A) picks and P (Y) goes back. Where the mod names
 controller buttons, for example in Dragon Rush, X is L, Y is P, A is Space
-and B is Backspace. You can change the keys in the port's launcher.
+and B is Backspace. To change the keys, see THE PORT'S SETTINGS below.
 
 
 PLAYSTATION CONTROLLERS
@@ -65,7 +67,41 @@ in Notepad and make sure these two lines read:
 input_backend = "sdl"
 dbz3_input_backend = "sdl"
 If you want the old Xbox-only mode back, choose XInput as the controller
-backend in the port's launcher; the mod will not switch it again.
+backend in the port's launcher (see THE PORT'S SETTINGS below for how to get
+the launcher back); the mod will not switch it again.
+
+
+THE PORT'S SETTINGS
+
+The port has its own launcher window with its settings, but it is drawn by
+the game and screen readers see an empty window (Tab moves around it, but
+nothing is spoken). So the first time you run "Play Budokai 3 Access.exe" it
+sets the game to skip the launcher and start straight away.
+
+You can change the settings in the file dbz3_user.toml in the game folder
+instead. Close the game, open the file in Notepad, change or add a line and
+save. Use the lines that start with dbz3_: when the game starts it writes the
+other lines over from them. If a line is already there, change it rather
+than adding a second copy.
+
+Screen mode ("windowed", "borderless" or "exclusive"):
+dbz3_fullscreen_mode = "borderless"
+Frame cap:
+dbz3_frame_cap = 60
+Language (1 English, 2 Japanese, 3 German, 4 French, 5 Spanish, 6 Italian;
+the mod only reads English):
+dbz3_language = 1
+Keyboard keys, one line per controller button, for example X on the J key:
+dbz3_keybind_x = "J"
+The buttons are a, b, x, y, start, back, left_shoulder, right_shoulder,
+left_trigger, right_trigger, dpad_up, dpad_down, dpad_left, dpad_right,
+lstick_up, lstick_down, lstick_left, lstick_right and the same for rstick.
+Keys are written like "J" or "Return".
+
+To get the launcher back (for example for a sighted helper), change this
+line to false:
+dbz3_skip_launcher = true
+The mod will not turn it on again.
 
 
 STARTING THE GAME

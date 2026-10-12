@@ -37,8 +37,8 @@ Unzip it into the same game folder.
 Run "Play Budokai 3 Access.exe" in the game folder. If Windows says
 "Windows protected your PC", choose "More info", then "Run anyway".
 
-The port's launcher opens. Press Enter to play. You should hear
-"Budokai 3 Access loaded".
+The game starts straight away (the port's launcher is skipped because
+screen readers cannot read it). You should hear "Budokai 3 Access loaded".
 
 The keys are in Budokai3Access\README.txt.
 

@@ -193,6 +193,24 @@ static void controller_backend(void) {
     logw(L"set the controller backend to SDL (PlayStation controllers)");
 }
 
+/* The port's launcher is drawn by the game (ImGui): screen readers see an
+ * empty window and Tab moves around it silently. dbz3_skip_launcher boots
+ * straight into the game. Done once, marked by Budokai3Access\launcher.txt,
+ * so a player who deletes the line to get the launcher back keeps it. */
+static void skip_launcher(void) {
+    wchar_t mark[MAX_PATH];
+    swprintf(mark, MAX_PATH, L"%lsBudokai3Access\\launcher.txt", g_dir);
+    if (exists(mark)) return;
+    toml_set("dbz3_skip_launcher", "true");
+    FILE *f = _wfopen(mark, L"wb");
+    if (f) {
+        fputs("Budokai 3 Access set the game to skip the port's launcher once (dbz3_skip_launcher = true in dbz3_user.toml).\r\n"
+              "To get the launcher back, change that line to false. Delete this file to have it skipped again.\r\n", f);
+        fclose(f);
+    }
+    logw(L"set the port's launcher to be skipped");
+}
+
 /* The mod only knows the English game text. The port's game language
  * (dbz3_language, Xbox ids: 1 English, 2 Japanese, 3 German, 4 French,
  * 5 Spanish, 6 Italian) defaults to English; if the player picked another in
@@ -237,6 +255,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmd, int show) {
     controller_backend();
     if (repair_only) return ok ? 0 : 1;
     english_check();
+    skip_launcher();
     STARTUPINFOW si; PROCESS_INFORMATION pi;
     memset(&si, 0, sizeof si); si.cb = sizeof si;
     if (!CreateProcessW(exe, NULL, NULL, NULL, FALSE, 0, NULL, g_dir, &si, &pi)) {
