@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdint.h>
 
-#define MOD_VERSION "1.0.4"
+#define MOD_VERSION "1.0.5"
 
 extern wchar_t g_game_dir[MAX_PATH];   /* folder of dbz3.exe, with trailing backslash */
 extern wchar_t g_mod_dir[MAX_PATH];    /* g_game_dir + "Budokai3Access\" */

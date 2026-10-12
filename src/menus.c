@@ -303,17 +303,15 @@ static void bonus_poll(void) {
  * +0x63 level, +0x64 experience, +0x68 experience to the next level. */
 static int g_strsel_last = -1;
 
-/* Character number -> position in the Bonus list. The list has no entries
- * for the numbers of characters cut from the game (22..26, 31, 44: Guldo,
- * Jeice, Burter, Zarbon, Dodoria, Android 19, Janemba, as the port's
- * new-characters pack shows by using exactly those). Skipping them lines the
- * rest up: Frieza 27, Androids 16..18 28..30, Dr. Gero 32 and Cooler 38 (both
- * named in that pack), Cell Jr. 43. 0..21 checked in game. */
+/* Character number -> position in the Bonus list: the same number. The
+ * select wheel runs 0..37 in that order (Frieza 22, Androids 16..18 23..25,
+ * Dr. Gero 26, Cell 27 ... Cooler 32, Bardock 33, Broly 34, Omega Shenron 35,
+ * Saibamen 36, Cell Jr. 37; 38 is Random), checked on a save with everyone
+ * unlocked. (1.0.4 and earlier skipped 22..26 after the new-characters pack's
+ * numbering, which shifted every name from Frieza on.) */
+#define CHAR_COUNT 38
 static int bonus_index(int id) {
-    if (id >= 0 && id <= 21) return id;
-    if (id >= 27 && id <= 30) return id - 5;
-    if (id >= 32 && id <= 43) return id - 6;
-    return -1;
+    return id >= 0 && id < CHAR_COUNT ? id : -1;
 }
 
 static const char *char_name(int id, char *buf, size_t cap) {
