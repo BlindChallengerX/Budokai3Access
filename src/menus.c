@@ -68,6 +68,16 @@ static void say_item(const Menu *m, int c, int interrupt) {
  *        +0 flag (2 = new)  +4 capsule ID  +0xc price  +0x10 category (high 16 bits, tab - 1)
  * A tab other than 0 shows only the records of its category. */
 #define SHOP_PTR 0x823ee7e4u
+/* Your Zenie (the same wallet as in Dragon Universe, du.c MONEY_TOTAL). */
+#define SHOP_MONEY 0x824a5898u
+static int g_shop_money = -1;
+static int shop_money(void) { int m = (int)g32(SHOP_MONEY); return m >= 0 && m <= 99999999 ? m : -1; }
+int shop_open(void) { return task_running("ESS SHOP") && g32(SHOP_PTR) != 0; }
+/* F8 in the shop: your money. */
+void shop_say_money(void) {
+    int m = shop_money();
+    if (m >= 0) speakf(1, "You have %d zenie", m);
+}
 static const char *k_shop_tabs[] = { "All skills", "Ability capsules", "Equipment capsules", "Item capsules", "System capsules" };
 static int g_shop_tab = -1, g_shop_pos = -1;
 
@@ -87,12 +97,20 @@ static int shop_item(uint32_t o, int tab, int pos, int *id, int *price, int *tot
 
 static void shop_poll(int force) {
     uint32_t o = task_running("ESS SHOP") ? g32(SHOP_PTR) : 0;
-    if (!o || !guest_ok(o + 0x60, 0x20)) { g_shop_tab = g_shop_pos = -1; return; }
+    if (!o || !guest_ok(o + 0x60, 0x20)) { g_shop_tab = g_shop_pos = -1; g_shop_money = -1; return; }
     int tab = (int)g32(o + 0x60), pos = (int)g32(o + 0x64) + (int)g32(o + 0x68);
     if (tab < 0 || tab > 4) return;
+    /* money: said when the shop opens and after each purchase */
+    int money = shop_money();
+    if (money >= 0 && money != g_shop_money) {
+        if (g_shop_money >= 0) speakf(0, "You now have %d zenie", money);
+        g_shop_money = money;
+    }
+    int opening = g_shop_tab < 0;
     if (!force && tab == g_shop_tab && pos == g_shop_pos) return;
     char buf[300] = "";
-    if (tab != g_shop_tab || force) snprintf(buf, sizeof buf, "%s. ", k_shop_tabs[tab]);
+    if ((opening || force) && money >= 0) snprintf(buf, sizeof buf, "You have %d zenie. ", money);
+    if (tab != g_shop_tab || force) snprintf(buf + strlen(buf), sizeof buf - strlen(buf), "%s. ", k_shop_tabs[tab]);
     int id = 0, price = 0, total = 0;
     if (shop_item(o, tab, pos, &id, &price, &total))
         snprintf(buf + strlen(buf), sizeof buf - strlen(buf), "%s, %d zenie, %d of %d", capsule_name(id), price, pos + 1, total);

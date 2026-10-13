@@ -45,7 +45,7 @@ void game_key(int vk, int shift, int ctrl) {
     else if (vk == VK_F5) { if (!du_menu_read() && !menus_read_current()) text_read_all(); }
     else if (vk == VK_F6 && shift) fight_toggle_beeps();
     else if (vk == VK_F6) { if (du_in_field()) du_describe(); else fight_describe(); }
-    else if (vk == VK_F8) { if (du_in_field()) du_status(); else fight_status(); }
+    else if (vk == VK_F8) { if (shop_open()) shop_say_money(); else if (du_in_field()) du_status(); else fight_status(); }
     else if (vk == VK_F11) tasks_dump();
     else if (vk == VK_F12) speak_repeat();
     else if (vk == VK_PRIOR) fight_volume(1);      /* Page Up */

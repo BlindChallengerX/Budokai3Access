@@ -11,11 +11,11 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "Budokai 3 Access (open source accessibility mod)"
       VALUE "FileDescription", "Budokai 3 Access screen reader mod for the DBZ Budokai 3 HD port"
-      VALUE "FileVersion", "1.0.6"
+      VALUE "FileVersion", "1.0.7"
       VALUE "InternalName", "Budokai3Access"
       VALUE "OriginalFilename", "Budokai3Access.dll"
       VALUE "ProductName", "Budokai 3 Access"
-      VALUE "ProductVersion", "1.0.6"
+      VALUE "ProductVersion", "1.0.7"
     END
   END
   BLOCK "VarFileInfo"

@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdint.h>
 
-#define MOD_VERSION "1.0.6"
+#define MOD_VERSION "1.0.7"
 
 extern wchar_t g_game_dir[MAX_PATH];   /* folder of dbz3.exe, with trailing backslash */
 extern wchar_t g_mod_dir[MAX_PATH];    /* g_game_dir + "Budokai3Access\" */
@@ -101,6 +101,8 @@ int sysq_open(void);           /* menus.c: a save or storage Yes/No question is 
 /* menus.c */
 void menus_poll(void);
 int menus_read_current(void);
+int shop_open(void);
+void shop_say_money(void);
 
 /* fight.c */
 void fight_init(void);

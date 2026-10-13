@@ -1,4 +1,4 @@
-Budokai 3 Access 1.0.6
+Budokai 3 Access 1.0.7
 
 A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is
@@ -17,7 +17,7 @@ WHAT YOU NEED
 
 INSTALL
 
-1. Unzip Budokai3Access-1.0.6.zip into the game folder, the folder with dbz3.exe.
+1. Unzip Budokai3Access-1.0.7.zip into the game folder, the folder with dbz3.exe.
 2. Run "Play Budokai 3 Access.exe" from that folder.
 
 If Windows says "Windows protected your PC", choose "More info", then
@@ -153,9 +153,10 @@ WHAT SHOULD SPEAK
   example "Y Kick, B Ki, A Guard, X Punch". In Custom, hold a button and press
   the D-pad: you hear that button's new action, for example "X: Guard". F5
   reads the row and the whole layout again.
-- Menus: Dueling (who plays), the Edit Skills menu, the Skill Shop (tab, then
-  each skill with its price and position, for example "Masenko, 1500 zenie,
-  1 of 3"), the pause menu in every mode, the menu after a match, and the
+- Menus: Dueling (who plays), the Edit Skills menu, the Skill Shop (your
+  Zenie when it opens, then the tab, then each skill with its price and
+  position, for example "Masenko, 1500 zenie, 1 of 3"; after you buy
+  something, how much you have left; F8 or F5 says your Zenie again), the pause menu in every mode, the menu after a match, and the
   Exit yes or no question. In the Practice pause menu each option says its
   setting, for example "COM action: Guard 1, 2 of 11", and the new setting
   when you change it.
@@ -315,7 +316,8 @@ F5          Read the highlighted menu item (where the mod knows the menu).
 F6          Distance to the opponent in words, for example
             "mid range, to your right, 27 units, above you".
 Shift+F6    Turn the distance sound off or on.
-F8          Health and ki of both fighters, for example
+F8          In the Skill Shop: how much Zenie you have.
+            In a fight: health and ki of both fighters, for example
             "You: health 77 percent, ki 3.0 bars. Opponent: health 100
             percent, ki 3.3 bars."
 F12         Repeat the last thing spoken.
