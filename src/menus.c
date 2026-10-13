@@ -141,6 +141,7 @@ static const struct { int labels[6]; } k_pause_layouts[] = {
     { { 6, 8, 10, 52, -1 } },     /* fight pause: Continue Battle, Refer to Skills, Reselect Characters, Return to Main Menu */
     { { 7, 10, 52, -1 } },        /* after a match: Battle Again?, Reselect Characters, Return to Main Menu */
     { { 6, 8, -1 } },             /* Dragon Universe battle pause: Continue Battle, Refer to Skills */
+    { { 6, 8, 53, 43, 52, -1 } }, /* Training lesson: ..., Review instructions, Return to Training Menu, Return to Main Menu */
 };
 static int g_layout = -1, g_lay_row = -1;
 
@@ -734,6 +735,35 @@ static void wish_poll(void) {
     wish_say(0);
 }
 
+/* ---------- Training lessons ----------
+ * The command a lesson asks for ("-> P+K" at the bottom of the screen) is a
+ * row of command icons drawn by [FIX]TRL DRAW from the block at 823ce050:
+ * +4 lesson on, +8 command shown, +0x10 up to 16 command codes (32 bit,
+ * -1 ends them; same codes as the skill lists). A new command is spoken once
+ * it has held for 600 ms, so the teacher's line comes first; the strip
+ * hiding while a hit lands does not repeat it. */
+#define TRL_BLOCK 0x823ce050u
+static void trl_poll(void) {
+    static char spoken[300], pending[300];
+    static DWORD since;
+    if (!task_running("[FIX]TRL DRAW") || !guest_ok(TRL_BLOCK, 0x50)) { spoken[0] = pending[0] = 0; return; }
+    if (!g32(TRL_BLOCK + 4) || !g32(TRL_BLOCK + 8)) return;
+    char buf[300];
+    int n = snprintf(buf, sizeof buf, "Command: "), any = 0;
+    for (uint32_t i = 0; i < 16; i++) {
+        int c = (int)g32(TRL_BLOCK + 0x10 + 4 * i);
+        if (c < 0) break;
+        n += snprintf(buf + n, sizeof buf - n, "%s%s", any ? ", then " : "", cmd_word(c));
+        any = 1;
+    }
+    if (!any) return;
+    if (strcmp(buf, pending)) { snprintf(pending, sizeof pending, "%s", buf); since = GetTickCount(); }
+    if (strcmp(pending, spoken) && GetTickCount() - since >= 600) {
+        speak_utf8(pending, 0);
+        snprintf(spoken, sizeof spoken, "%s", pending);
+    }
+}
+
 void menus_poll(void) {
     for (int i = 0; i < NMENUS; i++) {
         Menu *m = &k_menus[i];
@@ -746,6 +776,7 @@ void menus_poll(void) {
     }
     shop_poll(0);
     pause_poll();
+    trl_poll();
     stage_poll();
     bonus_poll();
     strsel_poll();

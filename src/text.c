@@ -160,14 +160,22 @@ static void row_from_icon(uint32_t d) {
     g_nrows++;
 }
 
+/* Icon number in the atlas (checked against the atlas picture): 0..5 back,
+ * forward, P, K, G, E; 6..11 back/forward + P, K, G; 12..17 back/forward +
+ * P+K, P+G, K+G; 18..22 P+K, P+G, K+G, P+K+G, P+K+G+E; 23 down + G;
+ * 24/25 back/forward + E; 26 up + G; 27 the Dragon Rush icon. */
 static const char *k_cmd_words[] = {
     "back", "forward", "punch", "kick", "guard", "ki",
     "back punch", "back kick", "back guard", "forward punch", "forward kick", "forward guard",
     "back punch and kick", "back punch and guard", "back kick and guard",
     "forward punch and kick", "forward punch and guard", "forward kick and guard",
     "punch and kick", "punch and guard", "kick and guard", "punch, kick and guard",
-    "punch, kick, guard and ki", "up or down and guard", "back ki", "forward ki", "punch, kick, guard and ki",
+    "punch, kick, guard and ki", "down and guard", "back ki", "forward ki", "up and guard", "Dragon Rush",
 };
+
+const char *cmd_word(int c) {
+    return c >= 0 && c < (int)(sizeof k_cmd_words / sizeof k_cmd_words[0]) ? k_cmd_words[c] : "?";
+}
 
 /* Number of skill rows on screen; fills *out with the spoken description of row i. */
 int skill_rows(void) { return GetTickCount() - g_rows_seen < 300 ? g_nrows : 0; }
@@ -180,7 +188,7 @@ int skill_row_text(int i, char *out, int cap) {
     for (int k = 0; k < 7 && len < cap - 40; k++) {
         int c = g8(r.cmd + k);
         if (c == 0x1b) break;
-        len += snprintf(out + len, cap - len, "%s%s", k ? ", " : "", c < (int)(sizeof k_cmd_words / sizeof k_cmd_words[0]) ? k_cmd_words[c] : "?");
+        len += snprintf(out + len, cap - len, "%s%s", k ? ", " : "", cmd_word(c));
     }
     return 1;
 }

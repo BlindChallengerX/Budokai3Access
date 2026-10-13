@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdint.h>
 
-#define MOD_VERSION "1.0.5"
+#define MOD_VERSION "1.0.6"
 
 extern wchar_t g_game_dir[MAX_PATH];   /* folder of dbz3.exe, with trailing backslash */
 extern wchar_t g_mod_dir[MAX_PATH];    /* g_game_dir + "Budokai3Access\" */
@@ -85,6 +85,7 @@ int text_visible(uint32_t sum, uint32_t idx);
 int text_visible_within(uint32_t sum, uint32_t idx, DWORD ms);
 int skill_rows(void);
 int skill_row_text(int i, char *out, int cap);
+const char *cmd_word(int c);          /* skill / training command code -> words */
 
 /* tasks.c */
 void tasks_poll(void);

@@ -1,4 +1,4 @@
-Budokai 3 Access 1.0.5
+Budokai 3 Access 1.0.6
 
 A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is
@@ -17,7 +17,7 @@ WHAT YOU NEED
 
 INSTALL
 
-1. Unzip Budokai3Access-1.0.5.zip into the game folder, the folder with dbz3.exe.
+1. Unzip Budokai3Access-1.0.6.zip into the game folder, the folder with dbz3.exe.
 2. Run "Play Budokai 3 Access.exe" from that folder.
 
 If Windows says "Windows protected your PC", choose "More info", then
@@ -129,6 +129,10 @@ WHAT SHOULD SPEAK
 - Fights: Ready, Fight, K O, Time up, Ring out, guard breaks, counters and
   other fight messages. A warning when your health drops below half and
   below a quarter.
+- Practice, Training: when a lesson shows the buttons to press ("Try these
+  commands"), the mod says them after the teacher's line, for example
+  "Command: forward, then forward, then punch and kick". F12 repeats the last
+  thing spoken. The Training pause menu is read too.
 - Main menu: the mode under the cursor and its place, for example
   "Dueling, 2 of 6" (7 once Dragon Arena is unlocked). Goku's comment on
   each mode is not read.
