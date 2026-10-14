@@ -1,5 +1,14 @@
-/* Budokai 3 Original Music: puts the PS2 (USA) soundtrack back into the
-   DBZ Budokai 3 HD port, built from the player's own PS2 disc.
+/* Budokai Original Music: puts the PS2 (USA) soundtrack back into the
+   DBZ Budokai 1 and Budokai 3 HD ports, built from the player's own PS2 disc.
+   The game is the one next to the program (dbz1.exe or dbz3.exe).
+
+   Budokai 1 (port 0.5.1): mods/og_music/us/adx_us.afs from the HD
+   assets/us/adx_us.afs with the 116 entries that differ from the PS2
+   USR/ADX_US.AFS taken from the disc (same 1541 entries in the same order;
+   all are 48 kHz stereo music, and entry 112 a PS2 track the HD game cut
+   to a 5 second stub). Budokai 1 has no opening movie.
+
+   Budokai 3:
 
    Writes <game>/mods/og_music/ (us/adx_usa.afs, us/opening.sfd, manifest.txt),
    the port's own mod format. The HD sound archive is copied and only the
@@ -27,9 +36,26 @@
 #include <wchar.h>
 #include <stdarg.h>
 
-#define VERSION L"1.0"
-#define HD_ENTRIES 4549
-#define PS2_ENTRIES 4541
+#define VERSION L"2.0"
+
+/* Budokai 1: HD entries replaced by the PS2 entry with the same number. */
+static const unsigned short k_b1_swap[] = { 62,63,64,70,71,72,73,74,75,76,77,78,79,80,81,82,83,112,113,158,165,205,208,215,222,227,230,239,241,255,269,301,308,321,337,346,353,361,368,375,382,388,418,428,441,448,451,456,464,469,477,486,489,496,499,502,512,524,530,536,545,705,753,763,784,799,819,851,861,874,882,895,914,926,937,951,969,984,993,1011,1020,1031,1040,1049,1074,1082,1116,1128,1136,1147,1148,1149,1150,1151,1152,1153,1154,1155,1156,1157,1158,1159,1160,1161,1186,1242,1254,1255,1256,1257,1258,1259,1260,1261,1262,1269 };
+
+typedef struct {
+    const wchar_t *exe;          /* the port's program */
+    const wchar_t *title;        /* "Budokai 3" */
+    const wchar_t *afs;          /* the HD sound archive's file name */
+    const wchar_t *ps2_name;     /* the PS2 sound archive's file name */
+    const char *ps2_path;        /* its path on the PS2 disc */
+    unsigned long hd_n, ps2_n;   /* entries in each */
+    int iso_support;             /* the port can play from the HD Collection ISO */
+    int digit;                   /* the number in the game's name (disc name check) */
+} Game;
+static const Game k_b1 = { L"dbz1.exe", L"Budokai 1", L"adx_us.afs", L"ADX_US.AFS", "USR/ADX_US.AFS", 1541, 1541, 0, 1 };
+static const Game k_b3 = { L"dbz3.exe", L"Budokai 3", L"adx_usa.afs", L"ADX_USA.AFS", "USR/ADX_USA.AFS", 4549, 4541, 1, 3 };
+static const Game *G = &k_b3;
+#define HD_ENTRIES (G->hd_n)
+#define PS2_ENTRIES (G->ps2_n)
 
 /* ---------- console ---------- */
 
@@ -399,6 +425,11 @@ static int afs_read(Src *s, Afs *a)
 
 static long ps2_index(unsigned long i)
 {
+    if (G == &k_b1) {
+        for (unsigned k = 0; k < sizeof k_b1_swap / sizeof k_b1_swap[0]; k++)
+            if (k_b1_swap[k] == i) return (long)i;
+        return -1;
+    }
     if (i >= 124 && i <= 146) return (long)i - 2;
     if (i == 307) return 305;
     if (i >= 4187 && i <= 4215) return (long)i - 8;
@@ -474,22 +505,24 @@ static int find_game(void)
     wchar_t p[MAX_PATH * 2], t[MAX_PATH * 2];
     GetModuleFileNameW(0, p, MAX_PATH * 2);
     *wcsrchr(p, L'\\') = 0;
-    join(t, p, L"dbz3.exe");
-    if (file_exists(t)) { wcscpy(g_game, p); return 1; }
-    GetCurrentDirectoryW(MAX_PATH * 2, p);
-    join(t, p, L"dbz3.exe");
-    if (file_exists(t)) { wcscpy(g_game, p); return 1; }
+    for (int pass = 0; pass < 2; pass++) {
+        if (pass) GetCurrentDirectoryW(MAX_PATH * 2, p);
+        join(t, p, L"dbz3.exe");
+        if (file_exists(t)) { wcscpy(g_game, p); G = &k_b3; return 1; }
+        join(t, p, L"dbz1.exe");
+        if (file_exists(t)) { wcscpy(g_game, p); G = &k_b1; return 1; }
+    }
     return 0;
 }
 
-/* HD data folder holding us\adx_usa.afs: the port accepts these layouts. */
+/* HD data folder holding us\<sound archive>: the ports accept these layouts. */
 static int find_hd_folder(wchar_t *afs_out)
 {
     static const wchar_t *dirs[] = {L"us", L"assets\\us", L"DBZ3\\us"};
     for (int i = 0; i < 3; i++) {
         wchar_t d[MAX_PATH * 2];
         join(d, g_game, dirs[i]);
-        join(afs_out, d, L"adx_usa.afs");
+        join(afs_out, d, G->afs);
         if (file_exists(afs_out)) return 1;
     }
     return 0;
@@ -501,6 +534,7 @@ static wchar_t g_toml[MAX_PATH * 2];
 static void toml_iso_path(wchar_t *out)
 {
     out[0] = 0;
+    if (!G->iso_support) return;          /* Budokai 1's port plays from its assets folder */
     join(g_toml, g_game, L"dbz3_user.toml");
     FILE *f = _wfopen(g_toml, L"rb");
     char line[2048];
@@ -661,7 +695,7 @@ static int is_ps2_iso(const wchar_t *path)
     Src s;
     int ok = 0;
     if (h == INVALID_HANDLE_VALUE) return 0;
-    if (iso9660_find(h, "USR/ADX_USA.AFS", &s)) {
+    if (iso9660_find(h, G->ps2_path, &s)) {
         Afs a;
         ok = afs_read(&s, &a) && a.n == PS2_ENTRIES;
     }
@@ -669,17 +703,21 @@ static int is_ps2_iso(const wchar_t *path)
     return ok;
 }
 
-static int name_looks_b3(const wchar_t *name)
+/* An archive named like the PS2 disc of this game: "Budokai 3", or for
+   Budokai 1 "Budokai" with no 2 or 3 (and not the HD Collection or a mod). */
+static int name_looks_right(const wchar_t *name)
 {
     wchar_t low[MAX_PATH];
     wcsncpy(low, name, MAX_PATH - 1);
     low[MAX_PATH - 1] = 0;
     _wcslwr(low);
-    return wcsstr(low, L"budokai") && wcsstr(low, L"3") && !wcsstr(low, L"hd") && !wcsstr(low, L"access");
+    if (!wcsstr(low, L"budokai") || wcsstr(low, L"hd") || wcsstr(low, L"access") || wcsstr(low, L"tenkaichi")) return 0;
+    if (G->digit == 3) return wcsstr(low, L"3") != NULL;
+    return !wcsstr(low, L"2") && !wcsstr(low, L"3");
 }
 
-/* Looks in a few usual places for a PS2 Budokai 3 image: any .iso that
-   really is one, or an archive (.7z/.zip) with "Budokai 3" in its name. */
+/* Looks in a few usual places for the PS2 disc image of the game: any .iso
+   that really is one, or an archive (.7z/.zip) named like it. */
 static int search_ps2(wchar_t *found)
 {
     wchar_t dirs[6][MAX_PATH * 2];
@@ -722,7 +760,7 @@ static int search_ps2(wchar_t *found)
                 return 1;
             }
             if (!archive[0] && (ends_with(fd.cFileName, L".7z") || ends_with(fd.cFileName, L".zip")) &&
-                name_looks_b3(fd.cFileName))
+                name_looks_right(fd.cFileName))
                 wcscpy(archive, full);
         } while (FindNextFileW(f, &fd));
         FindClose(f);
@@ -735,10 +773,12 @@ static int pick_file(wchar_t *out)
 {
     OPENFILENAMEW ofn = {sizeof ofn};
     out[0] = 0;
-    ofn.lpstrFilter = L"PS2 disc image or archive (*.iso, *.7z, *.zip, ADX_USA.AFS)\0*.iso;*.7z;*.zip;*.afs\0All files\0*.*\0";
+    static wchar_t title[128];
+    _snwprintf(title, 128, L"Choose your PS2 %ls (USA) disc image", G->title);
+    ofn.lpstrFilter = L"PS2 disc image or archive (*.iso, *.7z, *.zip, *.afs)\0*.iso;*.7z;*.zip;*.afs\0All files\0*.*\0";
     ofn.lpstrFile = out;
     ofn.nMaxFile = MAX_PATH * 2;
-    ofn.lpstrTitle = L"Choose your PS2 Budokai 3 (USA) disc image";
+    ofn.lpstrTitle = title;
     ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
     ofn.hwndOwner = GetConsoleWindow();
     return GetOpenFileNameW(&ofn);
@@ -841,15 +881,15 @@ static void open_ps2(const wchar_t *path)
     wcscpy(p, path);
     if (ends_with(p, L".7z") || ends_with(p, L".zip")) {
         unpack(p);
-        if (!find_in(g_tmp, L".iso", p, 0) && !find_in(g_tmp, L"ADX_USA.AFS", p, 0)) {
+        if (!find_in(g_tmp, L".iso", p, 0) && !find_in(g_tmp, G->ps2_name, p, 0)) {
             cleanup_tmp();
             fail(L"I couldn't find a disc image inside %ls.", base_name(path));
         }
     }
     if (dir_exists(p)) {
         wchar_t f[MAX_PATH * 2];
-        if (!find_in(p, L"ADX_USA.AFS", f, 0) && !find_in(p, L".iso", f, 0))
-            fail(L"I couldn't find ADX_USA.AFS or a .iso in the folder %ls.", p);
+        if (!find_in(p, G->ps2_name, f, 0) && !find_in(p, L".iso", f, 0))
+            fail(L"I couldn't find %ls or a .iso in the folder %ls.", G->ps2_name, p);
         wcscpy(p, f);
     }
     g_ps2_h = open_read(p);
@@ -862,7 +902,7 @@ static void open_ps2(const wchar_t *path)
         wchar_t sfd[MAX_PATH * 2];
         wcscpy(sfd, p);
         wcscpy((wchar_t *)base_name(sfd), L"OPENING.SFD");
-        g_sfd_h = open_read(sfd);
+        g_sfd_h = G == &k_b3 ? open_read(sfd) : INVALID_HANDLE_VALUE;
         if (g_sfd_h != INVALID_HANDLE_VALUE) {
             g_ps2_sfd.h = g_sfd_h;
             g_ps2_sfd.base = 0;
@@ -870,30 +910,30 @@ static void open_ps2(const wchar_t *path)
             g_have_sfd = 1;
         }
     } else {
-        if (!iso9660_find(g_ps2_h, "USR/ADX_USA.AFS", &g_ps2_afs))
-            fail(L"%ls is not the PS2 Budokai 3 disc (it has no USR\\ADX_USA.AFS).", base_name(p));
-        g_have_sfd = iso9660_find(g_ps2_h, "USR/OPENING.SFD", &g_ps2_sfd);
+        if (!iso9660_find(g_ps2_h, G->ps2_path, &g_ps2_afs))
+            fail(L"%ls is not the PS2 %ls disc (it has no USR\\%ls).", base_name(p), G->title, G->ps2_name);
+        g_have_sfd = G == &k_b3 && iso9660_find(g_ps2_h, "USR/OPENING.SFD", &g_ps2_sfd);
     }
 }
 
 int wmain(int argc, wchar_t **argv)
 {
-    SetConsoleTitleW(L"Budokai 3 Original Music " VERSION);
+    SetConsoleTitleW(L"Budokai Original Music " VERSION);
     CoInitializeEx(0, COINIT_APARTMENTTHREADED);
     g_buf = malloc(BUFSZ);
-    say(L"Budokai 3 Original Music, version %ls.", VERSION);
-    say(L"This puts the original PS2 soundtrack back into the Budokai 3 HD game, using your own PS2 disc.");
-    say(L"");
-
+    say(L"Budokai Original Music, version %ls.", VERSION);
     if (!find_game())
-        fail(L"I can't find the game. Put this program in your game folder, next to dbz3.exe, and run it again.");
-    if (process_running(L"dbz3.exe"))
+        fail(L"I can't find the game. Put this program in your game folder, next to dbz1.exe for Budokai 1 "
+             L"or dbz3.exe for Budokai 3, and run it again.");
+    say(L"This puts the original PS2 soundtrack back into the %ls HD game, using your own PS2 disc.", G->title);
+    say(L"");
+    if (process_running(G->exe))
         fail(L"The game is running. Close it first, then run this again.");
 
     wchar_t mod[MAX_PATH * 2], modus[MAX_PATH * 2], tmp[MAX_PATH * 2];
     join(mod, g_game, L"mods\\og_music");
     join(modus, mod, L"us");
-    join(tmp, modus, L"adx_usa.afs");
+    join(tmp, modus, G->afs);
     if (file_exists(tmp)) {
         say(L"The original music is already installed.");
         for (;;) {
@@ -917,6 +957,9 @@ int wmain(int argc, wchar_t **argv)
     HANDLE hd_iso = INVALID_HANDLE_VALUE;
     XEnt *d3 = 0, *us = 0;
     int d3n = 0, usn = 0, need_extract = 0, need_toml = iso[0] != 0;
+    if (!have_folder && !G->iso_support)
+        fail(L"I can't find the game's data (assets\\us\\adx_us.afs next to dbz1.exe). Set up the Budokai 1 port "
+             L"as its guide says and check that the game starts, then run this again.");
     if (!have_folder) {
         if (iso[0]) {
             hd_iso = open_read(iso);
@@ -964,13 +1007,13 @@ int wmain(int argc, wchar_t **argv)
     wchar_t ps2[MAX_PATH * 2] = L"";
     if (argc > 1) wcscpy(ps2, argv[1]);
     else {
-        say(L"Looking for your PS2 Budokai 3 disc image.");
+        say(L"Looking for your PS2 %ls disc image.", G->title);
         if (search_ps2(ps2)) {
             say(L"Found %ls.", base_name(ps2));
             if (!ask_yes(L"Use it? Type Y or N and press Enter.")) ps2[0] = 0;
         } else say(L"I didn't find it in the game folder, Downloads, Desktop or Documents.");
         if (!ps2[0]) {
-            say(L"A window opens now. Choose your PS2 Budokai 3 (USA) disc image: a .iso, or a .7z or .zip it came in.");
+            say(L"A window opens now. Choose your PS2 %ls (USA) disc image: a .iso, or a .7z or .zip it came in.", G->title);
             if (!pick_file(ps2)) fail(L"No file chosen. Nothing was changed.");
         }
     }
@@ -978,9 +1021,9 @@ int wmain(int argc, wchar_t **argv)
     Afs pa;
     if (!afs_read(&g_ps2_afs, &pa) || pa.n != PS2_ENTRIES) {
         cleanup_tmp();
-        fail(L"That disc isn't the USA PS2 release of Budokai 3. Only the USA version works.");
+        fail(L"That disc isn't the USA PS2 release of %ls. Only the USA version works.", G->title);
     }
-    say(L"PS2 disc OK.%ls", g_have_sfd ? L"" : L" No opening movie found on it, so the HD opening stays.");
+    say(L"PS2 disc OK.%ls", g_have_sfd || G != &k_b3 ? L"" : L" No opening movie found on it, so the HD opening stays.");
 
     /* ---- space ---- */
     unsigned long long need = 800ull << 20;
@@ -1011,11 +1054,11 @@ int wmain(int argc, wchar_t **argv)
     Afs ha;
     if (hh == INVALID_HANDLE_VALUE || !afs_read(&hd, &ha) || ha.n != HD_ENTRIES) {
         cleanup_tmp();
-        fail(L"The game's us\\adx_usa.afs isn't the one I expect (USA HD Collection). Nothing was changed.");
+        fail(L"The game's us\\%ls isn't the one I expect (USA HD Collection). Nothing was changed.", G->afs);
     }
     make_dirs(modus);
     wchar_t out[MAX_PATH * 2], part[MAX_PATH * 2];
-    join(out, modus, L"adx_usa.afs");
+    join(out, modus, G->afs);
     _snwprintf(part, MAX_PATH * 2, L"%ls.part", out);
     say(L"Building the music. This takes a minute or two.");
     if (!build_afs(&hd, &ha, &g_ps2_afs, &pa, part) || !MoveFileExW(part, out, MOVEFILE_REPLACE_EXISTING)) {
@@ -1035,11 +1078,11 @@ int wmain(int argc, wchar_t **argv)
     join(out, mod, L"manifest.txt");
     FILE *m = _wfopen(out, L"wb");
     if (m) {
-        fputs("name=OG Music\r\n"
-              "description=Original PS2 (US) Budokai 3 soundtrack by Kenji Yamamoto, put back into the HD game's music slots. "
-              "Built from your own PS2 disc; voices are unchanged.\r\n"
-              "author=Budokai 3 Original Music (BlindChallengerX)\r\n"
-              "version=1.0\r\n", m);
+        fprintf(m, "name=OG Music\r\n"
+                   "description=Original PS2 (US) %s soundtrack by Kenji Yamamoto, put back into the HD game's music slots. "
+                   "Built from your own PS2 disc; voices are unchanged.\r\n"
+                   "author=Budokai Original Music (BlindChallengerX)\r\n"
+                   "version=2.0\r\n", G == &k_b1 ? "Budokai 1" : "Budokai 3");
         fclose(m);
     }
     join(out, mod, L".disabled");
