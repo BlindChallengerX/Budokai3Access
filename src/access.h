@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdint.h>
 
-#define MOD_VERSION "1.0.7"
+#define MOD_VERSION "1.0.8"
 
 extern wchar_t g_game_dir[MAX_PATH];   /* folder of dbz3.exe, with trailing backslash */
 extern wchar_t g_mod_dir[MAX_PATH];    /* g_game_dir + "Budokai3Access\" */
@@ -82,6 +82,10 @@ const char *text_lookup(uint32_t sum, uint32_t idx);
 void text_mute_pack(uint32_t sum);
 void text_mute_all(int on);
 int text_visible(uint32_t sum, uint32_t idx);
+#define PLACE_NAMES_EARTH 0x26da3539u
+#define PLACE_NAMES_NAMEK 0xbfd36483u
+extern volatile uint32_t g_place_pack;     /* place names of the planet you are on */
+extern volatile DWORD g_place_pack_t;      /* when a place name was last drawn */
 int text_visible_within(uint32_t sum, uint32_t idx, DWORD ms);
 int skill_rows(void);
 int skill_row_text(int i, char *out, int cap);

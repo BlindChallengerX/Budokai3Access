@@ -1,4 +1,4 @@
-Budokai 3 Access 1.0.7
+Budokai 3 Access 1.0.8
 
 A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is

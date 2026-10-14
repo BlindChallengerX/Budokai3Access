@@ -96,6 +96,11 @@ static void texlog(uint32_t sum, uint32_t idx, uint32_t sprite) {
     }
 }
 
+/* Dragon Universe place names: Earth and Namek each have their own list
+ * (same numbering); the one the game drew last is the planet you are on. */
+volatile uint32_t g_place_pack = PLACE_NAMES_EARTH;
+volatile DWORD g_place_pack_t;           /* when a place name was last drawn */
+
 static guest_fn o_bind_tex;
 static void h_bind_tex(PPCContext *c, uint8_t *b) {
     /* Same lookup the game does at the start of this function. */
@@ -113,6 +118,11 @@ static void h_bind_tex(PPCContext *c, uint8_t *b) {
             g_cur_azt = azt;
             g_cur_sprite = (uint32_t)c->r3;
             texlog(r32(azt + 0x1c), r32(ent), (uint32_t)c->r4);
+            uint32_t sum = r32(azt + 0x1c);
+            if (sum == PLACE_NAMES_EARTH || sum == PLACE_NAMES_NAMEK) {
+                g_place_pack_t = GetTickCount();
+                if (sum != g_place_pack) { g_place_pack = sum; log_line("place names: %s", sum == PLACE_NAMES_NAMEK ? "Namek" : "Earth"); }
+            }
             vis_note(r32(azt + 0x1c), r32(ent));
         }
     }

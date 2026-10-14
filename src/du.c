@@ -24,7 +24,7 @@
  *
  * Ki Search (RB) picks the active marker within 3000 units nearest the
  * middle of the screen; A then enters it. Name ID + 2 is the texture of the
- * place name in pack 26da3539.
+ * place name in pack 26da3539 on Earth, bfd36483 on Namek.
  */
 #include "access.h"
 #include <math.h>
@@ -34,14 +34,41 @@
 #define FIELD       0x82479a60u
 #define VARS        0x8247a9b0u
 #define WORLD_PTR   0x82479770u
-#define PLACE_NAMES 0x26da3539u
+#define PLACE_NAMES place_names()
+#define EARTH_MAP_FILE 0x7b0u        /* data_cmn.afs file of Earth's map (5 MB) */
 #define KI_RANGE    3000.0f
+
+/* Earth and Namek each have their own list of place names (same numbering).
+ * FIELD+0x28..+0x40 point to the loader records (+0x20) of the field's
+ * files, in no fixed order; Earth's map, file 7b0, is among them on Earth.
+ * Once the field has its files and that one is missing, it is Namek, unless
+ * the game has drawn an Earth place name since you came into the field (the
+ * list drawn from last is in text.c g_place_pack). */
+static DWORD g_field_since;
+static uint32_t place_names(void) {
+    static uint32_t last;
+    uint32_t pack = g_place_pack;
+    int files = 0, earth = 0;
+    for (uint32_t o = 0x28; o <= 0x40; o += 4) {
+        uint32_t h = g32(FIELD + o);
+        if (!(h >= 0x40000020u && h < 0x50000000u && guest_ok(h - 0x20, 0x20))) continue;
+        files++;
+        if (g32(h - 0x20 + 4) == EARTH_MAP_FILE) earth = 1;
+    }
+    if (earth) pack = PLACE_NAMES_EARTH;
+    else if (files >= 5) {
+        int earth_drawn = g_place_pack == PLACE_NAMES_EARTH && g_field_since && (LONG)(g_place_pack_t - g_field_since) > 0;
+        pack = earth_drawn ? PLACE_NAMES_EARTH : PLACE_NAMES_NAMEK;
+    }
+    if (pack != last) { log_line("planet: %s (%d files%s)", pack == PLACE_NAMES_NAMEK ? "Namek" : "Earth", files, earth ? ", Earth map" : ""); last = pack; }
+    return pack;
+}
 
 static uint32_t g_target;            /* record address of the guide target, 0 = none */
 static uint32_t g_last_ks;           /* last marker Ki Search picked */
 static int g_last_place = -1;        /* last place banner (place_here) */
 static int g_was_field, g_in_range;
-static DWORD g_next_beep, g_field_since;
+static DWORD g_next_beep;
 
 /* Field menu (Start): one picture, texture 9 of pack 700efb0b, cursor at 82479b44. */
 #define FMENU_PACK   0x700efb0bu
