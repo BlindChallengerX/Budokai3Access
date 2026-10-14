@@ -638,7 +638,7 @@ static int ctl_row(void) {
 
 static void ctl_layout(char *buf, size_t cap) {
     uint32_t b = ctl_base(); int n = 0; char a[48];
-    for (int i = 0; i < 8; i++) { ctl_action(g8(b + 2 + (uint32_t)i), a, sizeof a); n += snprintf(buf + n, cap - n, "%s %s%s", k_ctl_btn[i], a, i < 7 ? ", " : "."); }
+    for (int i = 0; i < 8; i++) { ctl_action(g8(b + 2 + (uint32_t)i), a, sizeof a); n += snprintf(buf + n, cap - n, "%s %s%s", btn_name(k_ctl_btn[i]), a, i < 7 ? ", " : "."); }
 }
 
 static int ctl_say(int interrupt, int full) {

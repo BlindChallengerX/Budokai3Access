@@ -298,7 +298,7 @@ void du_status(void) {
     int balls = balls_held();
     if (balls > 0) n += snprintf(buf + n, sizeof buf - n, "Dragon Balls: %d of 7. ", balls);
     int place = place_here();
-    if (place == HIDDEN_NAME) n += snprintf(buf + n, sizeof buf - n, "At a hidden spot: R B for Ki Search, then A. ");
+    if (place == HIDDEN_NAME) n += snprintf(buf + n, sizeof buf - n, "At a hidden spot: %s for Ki Search, then %s. ", btn_name("R B"), btn_name("A"));
     else if (place >= 0 && text_lookup(PLACE_NAMES, place + 2))
         n += snprintf(buf + n, sizeof buf - n, "At %s. ", text_lookup(PLACE_NAMES, place + 2));
     uint32_t m[64];
@@ -674,17 +674,17 @@ void du_poll(void) {
         if (is_hidden(g_target)) {
             /* the banner check below speaks when A will work */
             float rad = gf(g_target + 0xc);
-            if (d < rad && !g_in_range) speak(L"Near the hidden spot. Face it, press R B for Ki Search, then A", 0);
+            if (d < rad && !g_in_range) speakf(0, "Near the hidden spot. Face it, press %s for Ki Search, then %s", btn_name("R B"), btn_name("A"));
             if (d < rad) g_in_range = 1; else if (d > rad + 400) g_in_range = 0;
         } else {
             int in = d < KI_RANGE - 200;
-            if (in && !g_in_range) speak(L"Guide target in Ki Search range, press R B and face it", 0);
+            if (in && !g_in_range) speakf(0, "Guide target in Ki Search range, press %s and face it", btn_name("R B"));
             if (d > KI_RANGE) g_in_range = 0; else if (in) g_in_range = 1;
         }
     }
     /* A hidden spot's "???" banner is up: A picks it up. */
     int place = place_here();
-    if (place != g_last_place && place == HIDDEN_NAME) speak(L"Hidden spot here. R B for Ki Search, then A", 0);
+    if (place != g_last_place && place == HIDDEN_NAME) speakf(0, "Hidden spot here. %s for Ki Search, then %s", btn_name("R B"), btn_name("A"));
     g_last_place = place;
     guide_beep();
 }

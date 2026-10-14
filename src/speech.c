@@ -130,11 +130,14 @@ static void enqueue(const wchar_t *text, int interrupt, int stop) {
 
 void speak(const wchar_t *text, int interrupt) {
     if (!text || !*text) return;
+    wchar_t *ps = buttons_rewrite(text);      /* PlayStation button names (buttons.c) */
+    if (ps) text = ps;
     wcsncpy(g_last, text, 2047); g_last[2047] = 0;
     char *u = to_utf8(text);
     log_line("SAY%s: %s", interrupt ? "" : "+", u ? u : "?");
     free(u);
     enqueue(text, interrupt, 0);
+    free(ps);
 }
 
 void speak_utf8(const char *text, int interrupt) {

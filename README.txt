@@ -1,4 +1,4 @@
-Budokai 3 Access 1.0.8
+Budokai 3 Access 1.0.9
 
 A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is
@@ -58,9 +58,12 @@ PLAYSTATION CONTROLLERS
 PS4 and PS5 controllers work. The port normally reads only Xbox
 controllers, so the first time you run "Play Budokai 3 Access.exe" it
 switches the port to its SDL controller support, which reads PlayStation
-and Xbox controllers. Where the mod names Xbox buttons: A is Cross, B is
-Circle, X is Square, Y is Triangle, LB/RB are L1/R1, Back is Share or
-Create, and L3/R3 are the stick clicks.
+and Xbox controllers.
+
+Press Shift+F12 to hear PlayStation button names instead of Xbox ones:
+Cross, Circle, Square, Triangle, L1, R1, L2, R2, Options and Share. The
+game's own texts ("Press START button", "Skills: X button") are read with
+them too. Press Shift+F12 again to go back; the mod remembers your choice.
 
 To set it by hand, close the game, open dbz3_user.toml in the game folder
 in Notepad and make sure these two lines read:
@@ -321,6 +324,7 @@ F8          In the Skill Shop: how much Zenie you have.
             "You: health 77 percent, ki 3.0 bars. Opponent: health 100
             percent, ki 3.3 bars."
 F12         Repeat the last thing spoken.
+Shift+F12   PlayStation or Xbox button names.
 Page Up     Mod sounds louder (distance tone, edge, guide beep, meters), 10
             percent a step up to 200 percent. Remembered between sessions.
 Page Down   Mod sounds quieter, down to 10 percent.

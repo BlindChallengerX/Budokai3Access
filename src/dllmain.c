@@ -137,6 +137,7 @@ __declspec(dllexport) void core_start(void) {
     g_logf = _wfopen(logpath, L"a");
     log_line("Budokai3Access " MOD_VERSION " starting");
     speech_init();
+    buttons_load();
     g_stop = 0;
     g_thread = CreateThread(NULL, 0, mod_thread, NULL, 0, NULL);
 }

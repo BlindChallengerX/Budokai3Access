@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdint.h>
 
-#define MOD_VERSION "1.0.8"
+#define MOD_VERSION "1.0.9"
 
 extern wchar_t g_game_dir[MAX_PATH];   /* folder of dbz3.exe, with trailing backslash */
 extern wchar_t g_mod_dir[MAX_PATH];    /* g_game_dir + "Budokai3Access\" */
@@ -24,6 +24,12 @@ void speech_init(void);
 void speech_shutdown(void);
 void speak(const wchar_t *text, int interrupt);
 void speak_utf8(const char *text, int interrupt);
+/* buttons.c: Xbox or PlayStation button names (Shift+F12) */
+extern volatile int g_ps_buttons;
+void buttons_load(void);
+void buttons_toggle(void);
+const char *btn_name(const char *xbox);
+wchar_t *buttons_rewrite(const wchar_t *in);
 void speakf(int interrupt, const char *fmt, ...);
 void speak_repeat(void);
 void speech_stop(void);

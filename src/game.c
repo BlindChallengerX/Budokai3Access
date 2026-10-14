@@ -47,6 +47,7 @@ void game_key(int vk, int shift, int ctrl) {
     else if (vk == VK_F6) { if (du_in_field()) du_describe(); else fight_describe(); }
     else if (vk == VK_F8) { if (shop_open()) shop_say_money(); else if (du_in_field()) du_status(); else fight_status(); }
     else if (vk == VK_F11) tasks_dump();
+    else if (vk == VK_F12 && shift) buttons_toggle();
     else if (vk == VK_F12) speak_repeat();
     else if (vk == VK_PRIOR) fight_volume(1);      /* Page Up */
     else if (vk == VK_NEXT) fight_volume(-1);      /* Page Down */
