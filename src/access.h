@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdint.h>
 
-#define MOD_VERSION "1.0.9"
+#define MOD_VERSION "1.0.10"
 
 extern wchar_t g_game_dir[MAX_PATH];   /* folder of dbz3.exe, with trailing backslash */
 extern wchar_t g_mod_dir[MAX_PATH];    /* g_game_dir + "Budokai3Access\" */
@@ -120,7 +120,8 @@ void fight_shutdown(void);
 void fight_poll_all(void);
 void fight_describe(void);
 void fight_status(void);
-void fight_toggle_beeps(void);
+void fight_toggle_beeps(void);      /* Dragon Universe guide beep on / off */
+void fight_cycle_distance(void);    /* fight distance sound: subtle hum, steady tone, off */
 void fight_tone(int slot, float f0, float f1, float seconds, float gain, float pan);
 void fight_volume(int dir);   /* +1 / -1: all mod sounds 10 percent louder / quieter */
 

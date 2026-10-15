@@ -8,11 +8,12 @@
  * high the opponent is, and on which side of the screen the opponent is,
  * which is what forward and back on the stick depend on.
  *
- * During a fight a steady tone plays (as in Tekken 3 Access): higher when
- * closer (880 Hz touching, 220 Hz far), panned to the opponent's side of the
- * screen, reedy when the opponent is on the left and smooth on the right. A
- * soft chirp every so often slides up when the opponent is above you and
- * down when below. The tone runs from "Fight!" until the round ends and is
+ * During a fight a distance sound plays, chosen with Shift+F6: a subtle hum
+ * (default; soft sine, 110 Hz far to 330 Hz touching, louder when closer), a
+ * steady tone (as in Tekken 3 Access: 880 Hz touching, 220 Hz far, reedy when
+ * the opponent is on the left and smooth on the right), or off. Either is
+ * panned to the opponent's side of the screen. A soft chirp every so often
+ * slides up when the opponent is above you and down when below. The tone runs from "Fight!" until the round ends and is
  * quiet while the game is paused, the Ultimate minigame or a Dragon Rush.
  *
  * Which side is you: in World Tournament the human is sometimes player 2.
@@ -32,7 +33,27 @@
 #define GAUGE_BASE_PTR 0x82324064u   /* -> side 0 gauge block - 4; blocks are 0x1e0 apart */
 #define BTL_WORK_PTR 0x823d6cf4u
 
-volatile int g_beeps_on = 1;
+volatile int g_beeps_on = 1;   /* Dragon Universe guide beep (Shift+F6 in the field) */
+
+/* Fight distance sound (Shift+F6 in a fight), kept in
+ * Budokai3Access\distance_sound.txt: 0 off, 1 subtle hum (default; a soft low
+ * sine, as in Soulcalibur II Access), 2 the steady Tekken 3 style tone. Off
+ * only silences the distance: the ring edge knock, the Ultimate meter and
+ * the Dragon Universe guide keep playing. */
+#define DIST_OFF 0
+#define DIST_SUBTLE 1
+#define DIST_STEADY 2
+static volatile int g_dist_mode = DIST_SUBTLE;
+static void dist_path(wchar_t *p) { swprintf(p, MAX_PATH, L"%lsdistance_sound.txt", g_mod_dir); }
+static void dist_load(void) {
+    wchar_t p[MAX_PATH]; dist_path(p);
+    FILE *f = _wfopen(p, L"r");
+    if (!f) return;
+    char w[32] = "";
+    if (fscanf(f, "%31s", w) == 1)
+        g_dist_mode = !strcmp(w, "off") ? DIST_OFF : !strcmp(w, "steady") ? DIST_STEADY : DIST_SUBTLE;
+    fclose(f);
+}
 
 /* Volume of all the mod's sounds, in percent (Page Up / Page Down), kept in
  * Budokai3Access\sound_volume.txt. */
@@ -203,7 +224,18 @@ void fight_describe(void) {
 
 void fight_toggle_beeps(void) {
     g_beeps_on = !g_beeps_on;
-    speak(g_beeps_on ? L"Distance sound on" : L"Distance sound off", 1);
+    speak(g_beeps_on ? L"Guide beep on" : L"Guide beep off", 1);
+}
+
+/* Shift+F6 in a fight or menu: subtle hum, steady tone, off, and round. */
+void fight_cycle_distance(void) {
+    g_dist_mode = g_dist_mode == DIST_SUBTLE ? DIST_STEADY : g_dist_mode == DIST_STEADY ? DIST_OFF : DIST_SUBTLE;
+    static const char *const names[] = { "off", "subtle", "steady" };
+    wchar_t p[MAX_PATH]; dist_path(p);
+    FILE *f = _wfopen(p, L"w");
+    if (f) { fprintf(f, "%s\n", names[g_dist_mode]); fclose(f); }
+    speak(g_dist_mode == DIST_SUBTLE ? L"Distance sound: subtle hum"
+          : g_dist_mode == DIST_STEADY ? L"Distance sound: steady tone" : L"Distance sound off", 1);
 }
 
 /* ---------- health and ki ----------
@@ -325,16 +357,26 @@ static DWORD WINAPI audio_thread(LPVOID unused) {
         WaitForSingleObject(ev, 100);
         for (int i = 0; i < NBUF; i++) {
             if (!(hdr[i].dwFlags & WHDR_DONE)) continue;
-            int active, tone; float dist, side, dy, edge, epan;
+            int active, live, tone, mode = g_dist_mode; float dist, side, dy, edge, epan;
             EnterCriticalSection(&g_lock);
-            active = s_active && g_beeps_on && game_has_focus() && GetTickCount() - s_update < 500;
-            tone = active && !s_quiet;
+            active = s_active && game_has_focus() && GetTickCount() - s_update < 500;
+            live = active && !s_quiet;               /* a round is on: edge knock */
+            tone = live && mode != DIST_OFF;         /* distance hum or tone, height chirp */
             dist = s_dist; side = s_side; dy = s_dy; edge = s_edge_dist; epan = s_edge_pan;
-            /* steady distance tone (Tekken 3 Access): 880 Hz touching (8 units),
-             * two octaves down to 220 Hz far (130 units) */
-            float d = clampf(dist, 8.0f, 130.0f);
-            float want_freq = 880.0f * powf(2.0f, -2.0f * (d - 8.0f) / 122.0f);
-            float want_gain = tone ? 0.13f : 0.0f;
+            float d = clampf(dist, 8.0f, 130.0f), close = 1.0f - (d - 8.0f) / 122.0f;
+            float want_freq, want_gain;
+            if (mode == DIST_STEADY) {
+                /* steady tone (Tekken 3 Access): 880 Hz touching (8 units),
+                 * two octaves down to 220 Hz far (130 units) */
+                want_freq = 880.0f * powf(2.0f, -2.0f * (d - 8.0f) / 122.0f);
+                want_gain = tone ? 0.13f : 0.0f;
+            } else {
+                /* subtle hum (Soulcalibur II Access): a soft sine, 110 Hz far
+                 * up to 330 Hz touching, and quieter the farther away */
+                want_freq = 110.0f * powf(3.0f, close);
+                want_gain = tone ? 0.025f + 0.055f * close : 0.0f;
+            }
+            int smooth_only = mode != DIST_STEADY;   /* the hum has no reedy left side; pan says it */
             if (tone != was_tone) { was_tone = tone; log_line("distance tone %s", tone ? "on" : "off"); }
             float want_pan = dist < 3.0f ? 0.0f : clampf(side * 0.6f, -0.6f, 0.6f);
             if (side < -0.15f) t_left = 1; else if (side > 0.15f) t_left = 0;   /* timbre side, with some slack */
@@ -344,7 +386,7 @@ static DWORD WINAPI audio_thread(LPVOID unused) {
                 t_freq += (want_freq - t_freq) * 0.0015f;
                 t_gain += (want_gain - t_gain) * 0.0008f;
                 t_pan += (want_pan - t_pan) * 0.0015f;
-                t_reed += ((t_left ? 1.0f : 0.0f) - t_reed) * 0.0005f;   /* blend the timbres: a hard switch clicked */
+                t_reed += ((t_left && !smooth_only ? 1.0f : 0.0f) - t_reed) * 0.0005f;   /* blend the timbres: a hard switch clicked */
                 if (t_gain > 1e-4f) {
                     float ph = t_phase;
                     float reedy = (sinf(ph) + sinf(3 * ph) / 3 + sinf(5 * ph) / 5 + sinf(7 * ph) / 7) * 0.8f;  /* odd harmonics */
@@ -359,14 +401,15 @@ static DWORD WINAPI audio_thread(LPVOID unused) {
                     /* height: a soft chirp from the opponent's side, sliding up
                      * when they are above you, down when below */
                     if (tone && (dy > 4.0f || dy < -4.0f) && until_chirp <= 0) {
-                        float f0 = want_freq * 1.5f;
-                        voice_start(&chirp, f0, dy > 0 ? f0 * 1.5f : f0 / 1.5f, 0.09f, 0.08f, want_pan);
+                        float f0 = mode == DIST_STEADY ? want_freq * 1.5f : want_freq * 2.0f;
+                        voice_start(&chirp, f0, dy > 0 ? f0 * 1.5f : f0 / 1.5f, 0.09f,
+                                    mode == DIST_STEADY ? 0.08f : 0.045f, want_pan);
                         until_chirp = 0.7 * RATE;
                     }
                     /* ring edge: a short, loud knock from the edge's side (a quick pitch
                      * drop), about 2 a second at the outer range up to 14 a second at
                      * the very edge, and louder the closer you are */
-                    if (tone && edge < EDGE_SOUND && until_thump <= 0) {
+                    if (live && edge < EDGE_SOUND && until_thump <= 0) {
                         float closeness = 1.0f - clampf(edge / EDGE_SOUND, 0, 1);
                         voice_start(&thump, 240.0f + 80.0f * closeness, 110.0f, 0.045f, 0.60f + 0.30f * closeness, clampf(epan, -1, 1) * 0.9f);
                         until_thump = (0.07 + 0.43 * (1.0f - closeness)) * RATE;
@@ -436,7 +479,7 @@ static void ult_poll(void) {
         g_ult_presses = presses;
         fight_tone(1, 660, 660, 0.03f, 0.18f, 0);       /* press registered */
     }
-    int active = presses < 3 && g_beeps_on;
+    int active = presses < 3;   /* plays whatever the distance sound setting */
     s_ult_on = active;
     s_ult_level = me;
     if (active && me < g_ult_prev - 30)
@@ -538,6 +581,7 @@ static void announce_poll(void) {
 void fight_init(void) {
     InitializeCriticalSection(&g_lock);
     vol_load();
+    dist_load();
     g_audio_stop = 0;
     g_audio_thread = CreateThread(NULL, 0, audio_thread, NULL, 0, NULL);
 }

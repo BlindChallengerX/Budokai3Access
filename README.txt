@@ -1,4 +1,4 @@
-Budokai 3 Access 1.0.9
+Budokai 3 Access 1.0.10
 
 A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is
@@ -203,13 +203,22 @@ Hit!". The defender stops the rush by guessing the same button.
 
 DISTANCE SOUND
 
-During a fight a steady tone plays, the same kind as in Tekken 3 Access. The
-closer the opponent, the higher the tone: high when you are touching, two
-octaves lower when far apart. It comes from the opponent's side of the
-screen, and it is reedy when the opponent is on your left and smooth when on
-your right. When the opponent is above you a soft chirp slides up every so
-often; when below, it slides down. The tone starts at "Fight!", stops when
-the round ends, and is quiet while the game is paused.
+During a fight a quiet hum tells you how far away the opponent is. The
+closer they are, the higher and a little louder it gets: a low murmur when
+far apart, a soft mid hum when you are touching. It comes from the
+opponent's side of the screen. When the opponent is above you a soft chirp
+slides up every so often; when below, it slides down. The sound starts at
+"Fight!", stops when the round ends, and is quiet while the game is paused.
+
+Shift+F6 in a fight (or in any menu) switches between three settings, and
+the mod remembers your choice:
+- Subtle hum (the default, described above).
+- Steady tone, the louder one from earlier versions (as in Tekken 3
+  Access): high when touching, two octaves lower when far, reedy when the
+  opponent is on your left and smooth on your right.
+- Off: no distance sound at all. The ring edge knock, the Ultimate meter
+  and the Dragon Universe guide beep still play, and F6 still tells the
+  distance in words.
 
 In World Tournament you are sometimes player 2. The mod checks which side
 you control in every match, so the tone, F6, F8, the health warnings, the
@@ -296,7 +305,7 @@ F5          Next marker as the guide target: story events first, then the
             "2 of 10, Kame House, 5189 units, turn left 40".
 F6          Where the guide target is now.
 F8          The place you are in and every marker within 3000 units.
-Shift+F6    Guide beep off or on (the same switch as the fight tone).
+Shift+F6    Guide beep off or on (separate from the fight distance sound).
 
 On the controller: clicking the right stick (R3) does F5 everywhere (with
 LB held, Shift+F5), and clicking the left stick (L3) does F6.
@@ -318,7 +327,7 @@ F2          Read all text on screen again.
 F5          Read the highlighted menu item (where the mod knows the menu).
 F6          Distance to the opponent in words, for example
             "mid range, to your right, 27 units, above you".
-Shift+F6    Turn the distance sound off or on.
+Shift+F6    Distance sound: subtle hum, steady tone or off.
 F8          In the Skill Shop: how much Zenie you have.
             In a fight: health and ki of both fighters, for example
             "You: health 77 percent, ki 3.0 bars. Opponent: health 100
