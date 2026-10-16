@@ -4,6 +4,10 @@ A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is
 running.
 
+Budokai 1 Access, the same kind of mod for Budokai 1, comes from the same
+page. BudokaiAccess-1and3.zip holds both mods:
+https://github.com/BlindChallengerX/BudokaiAccess/releases/latest
+
 
 WHAT YOU NEED
 
@@ -383,7 +387,7 @@ ORIGINAL MUSIC (OPTIONAL, NOT INCLUDED)
 The HD Collection replaced the original American soundtrack from the PS2
 release. If you own the PS2 version of Budokai 3 (USA), the separate
 program "Budokai 3 Original Music" puts the old music back from your disc:
-https://github.com/BlindChallengerX/Budokai3Access/releases/tag/music-1.0
+https://github.com/BlindChallengerX/BudokaiAccess/releases/tag/music-1.0
 The music is not included here and the mod works the same without it.
 
 

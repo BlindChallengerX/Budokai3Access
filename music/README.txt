@@ -82,5 +82,5 @@ IF SOMETHING GOES WRONG
   dbz1.exe or dbz3.exe.
 - "The game is running": close the game first.
 
-Source code: https://github.com/BlindChallengerX/Budokai3Access
+Source code: https://github.com/BlindChallengerX/BudokaiAccess
 (music folder). Free to use and share, see LICENSE.txt.

@@ -27,7 +27,7 @@ The port's own instructions are in Spanish. You don't need them for this.
 3. THE MOD
 
 Download Budokai3Access-1.0.1.zip:
-https://github.com/BlindChallengerX/Budokai3Access/releases/latest
+https://github.com/BlindChallengerX/BudokaiAccess/releases/latest
 
 Unzip it into the same game folder.
 
