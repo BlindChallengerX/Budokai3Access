@@ -521,14 +521,16 @@ static void status_poll(void) {
  * Task "SEDIT 0P MAIN"; object at *(8247971c):
  *   +0x50 mode: 5 = on the tray, 6 = in the capsule list
  *   +0x64 tray cursor (1 = first slot)   +0x68 list tab (Ability, Equipment, Item)
- *   +0x90 + 0x1c * tab: that tab's list: +4 cursor, +8 capsule IDs (16 bit,
- *          -1 = none), +0x1a number of capsules
+ *   +0x90 + 0x1c * tab: that tab's list: +0 first row shown (the list
+ *          scrolls after 9 rows), +4 cursor row on screen (0..8), +8 the IDs
+ *          of the 9 rows shown (16 bit, -1 = none), +0x1a number of capsules
  *   +0x100 capsules in the tray, +0x104 their IDs (32 bit)
  * Capsule info: table at *(8237560c), 0x28 bytes per ID; byte +8 low 3
  * bits = slots it takes (the tray has 7). */
 #define SEDIT_PTR   0x8247971cu
 #define CAPS_INFO   0x8237560cu
 #define TRAY_NAMES_PACK 0x07992cd0u       /* short capsule names drawn in the tray, by capsule ID */
+#define LIST_NAMES_PACK 0xb65d9602u       /* capsule names in the list, by capsule ID */
 static const char *k_tabs[] = { "Ability", "Equipment", "Item" };
 extern const char *capsule_name(int id);
 static int g_se_mode = -1, g_se_cur = -1, g_se_tab = -1, g_se_count = -1;
@@ -584,14 +586,16 @@ static int sedit_say(int interrupt, int full) {
         int tab = s32(o + 0x68);
         if (tab < 0 || tab > 2) return 0;
         uint32_t L = o + 0x90 + 0x1c * tab;
-        int cnt = (int16_t)g16(L + 0x1a), cur = s32(L + 4);
+        int cnt = (int16_t)g16(L + 0x1a), cur = s32(L + 4), top = s32(L);
+        if (cur < 0 || cur > 8) cur = 0;
+        if (top < 0 || top >= cnt) top = 0;
         int k = 0;
         if (full || tab != g_se_tab) k = snprintf(buf, sizeof buf, "%s, %d capsule%s. ", k_tabs[tab], cnt, cnt == 1 ? "" : "s");
         if (cnt <= 0) snprintf(buf + k, sizeof buf - k, "Empty. Left and right change the tab.");
         else {
             int id = (int16_t)g16(L + 8 + 2 * cur);
             caps_words(id, w, sizeof w);
-            k += snprintf(buf + k, sizeof buf - k, "%s%s, %d of %d", w, in_tray(o, id) ? ", in tray" : "", cur + 1, cnt);
+            k += snprintf(buf + k, sizeof buf - k, "%s%s, %d of %d", w, in_tray(o, id) ? ", in tray" : "", top + cur + 1, cnt);
             if (full) snprintf(buf + k, sizeof buf - k, ". %d of 7 slots used. A puts it in the tray, X shows its skill card, left and right change the tab.", slots);
         }
         speak_utf8(buf, interrupt);
@@ -602,21 +606,21 @@ static int sedit_say(int interrupt, int full) {
 
 static void sedit_poll(void) {
     uint32_t o = sedit_obj();
-    if (!o) { g_se_mode = g_se_cur = g_se_tab = g_se_count = -1; return; }
+    if (!o) { if (g_se_mode != -1) text_mute_list(0); g_se_mode = g_se_cur = g_se_tab = g_se_count = -1; return; }
     text_mute_pack(TRAY_NAMES_PACK);
-    int sl, cnt = tray_used(o, &sl);
-    if (g_se_count >= 0 && cnt != g_se_count)
-        speakf(1, "%s. %d of 7 slots used", cnt > g_se_count ? "Added" : "Removed", sl);
+    text_mute_list(LIST_NAMES_PACK);   /* rows scrolling into view; sedit_say reads the cursor row */
+    int sl, cnt = tray_used(o, &sl), changed = g_se_count >= 0 && cnt != g_se_count;
+    if (changed) speakf(1, "%s. %d of 7 slots used", cnt > g_se_count ? "Added" : "Removed", sl);
     g_se_count = cnt;
     int mode = s32(o + 0x50), tab = s32(o + 0x68), cur;
     if (mode == 5) cur = s32(o + 0x64);
-    else if (mode == 6 && tab >= 0 && tab <= 2) cur = s32(o + 0x90 + 0x1c * tab + 4);
+    else if (mode == 6 && tab >= 0 && tab <= 2) cur = s32(o + 0x90 + 0x1c * tab) + s32(o + 0x90 + 0x1c * tab + 4);   /* top + row */
     else cur = -1;
     if (mode != g_se_mode && (mode == 5 || mode == 6)) {
         if (g_se_mode < 0) { int sl; tray_used(o, &sl); speakf(0, "Custom tray, %d of 7 slots used", sl); }
         g_se_tab = -1;
         sedit_say(g_se_mode < 0 ? 0 : 1, 0);
-    } else if ((mode == 5 || mode == 6) && (cur != g_se_cur || (mode == 6 && tab != g_se_tab))) sedit_say(1, 0);
+    } else if ((mode == 5 || mode == 6) && (cur != g_se_cur || (mode == 6 && tab != g_se_tab))) sedit_say(!changed, 0);   /* after "Removed", not over it */
     g_se_mode = mode; g_se_cur = cur; g_se_tab = mode == 6 ? tab : -1;
 }
 

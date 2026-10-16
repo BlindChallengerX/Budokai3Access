@@ -487,6 +487,13 @@ static void ult_poll(void) {
     g_ult_prev = me;
 }
 
+/* Dragon Rush, Fusion and Potara picks are actions, not buttons, so they are
+ * named as actions: short to say, and right on any controller, layout or
+ * keyboard (user request). */
+static const char *action_button(int mask) {
+    return mask == 1 ? "Punch" : mask == 2 ? "Kick" : mask == 4 ? "Guard" : mask == 8 ? "Ki" : "?";
+}
+
 /* ---------- Dragon Rush ----------
  * Task "[FIX]DRUSH" keeps its data inline in the task record from +0x30
  * (game code 820efbf8, picks in 820eea00). Offsets from there:
@@ -494,11 +501,12 @@ static void ult_poll(void) {
  *         to the next exchange, 6 over
  *   +0x18 buttons the attacker has used (16 bit mask); nobody may pick them
  *   +0x1a who has picked this exchange (1 attacker, 2 defender)
- *   +0x1c / +0x1e attacker's / defender's pick: 1 X, 2 Y, 4 A, 8 B
+ *   +0x1c / +0x1e attacker's / defender's pick as an action mask (Punch 1,
+ *         Kick 2, Guard 4, Ki 8: X, Y, A, B on the default layout)
  *   +0x20 / +0x22 attacker's / defender's player number
  *   +0x24.. attacker's picks so far, +0x2a.. defender's, +0x32 exchange (0..2)
  * The defender stops the rush by picking the same button as the attacker. */
-static const char *dr_button(int m) { return m == 1 ? "X" : m == 2 ? "Y" : m == 4 ? "A" : m == 8 ? "B" : "nothing"; }
+static const char *dr_button(int m) { return m ? action_button(m) : "nothing"; }
 static int g_dr_phase = -1, g_dr_mine;
 
 static void drush_poll(void) {
@@ -533,6 +541,99 @@ static void drush_poll(void) {
         g_dr_mine = 1;
         fight_tone(1, 880, 880, 0.04f, 0.2f, 0);     /* your pick registered */
     }
+}
+
+/* ---------- Fusion command ----------
+ * A fusion skill (Fusion <Gotenks>, <Gogeta>...) used in Hyper Mode shows a
+ * row of five buttons to press in order before a timer runs out (tasks
+ * "[FIX]CMD" / "[FIX]CMDDRAW"; the row is a picture the text reader cannot
+ * read). Data is the work of [FIX]CMDDRAW:
+ *   +0x04 phase: 0 intro (about 1 s), 1 pressing (3 s), 2 result, 3 over
+ *   +0x08 frame counter of the phase (float), +0x0c / +0x10 intro / window length
+ *   +0x14.. five buttons, s32 each, as action masks: Punch 1, Kick 2, Guard 4, Ki 8
+ *   +0x28 1 = failed (wrong button or too slow), +0x2c buttons pressed right
+ * The sequence is random each time and is set from the start of the intro;
+ * presses during the intro are ignored (neither counted nor a mistake).
+ * Success gives the fused fighter, failure a weak one (fat Gotenks).
+ * "[MDG]SKL 1P" / "2P" (the skill name banner) says whose fusion it is. */
+static int g_cmd_phase = -1, g_cmd_mine, g_cmd_done;
+static float g_cmd_t;   /* frames into the pressing window */
+
+static void fusion_poll(void) {
+    uint32_t w = task_work("[FIX]CMDDRAW");
+    if (!w || !guest_ok(w, 0x30)) { g_cmd_phase = -1; return; }
+    int phase = (int)g32(w + 4);
+    if (g_cmd_phase < 0) {
+        if (!g32(w + 0x14)) return;     /* sequence not set yet */
+        int owner = task_running("[MDG]SKL 2P") ? 1 : task_running("[MDG]SKL 1P") ? 0 : g_side;
+        g_cmd_mine = owner == g_side;
+        g_cmd_done = 0;
+        if (g_cmd_mine) {
+            char buf[160]; int n = snprintf(buf, sizeof buf, "Fusion! Press");
+            for (int i = 0; i < 5 && g32(w + 0x14 + 4 * (uint32_t)i); i++)
+                n += snprintf(buf + n, sizeof buf - n, "%s %s", i ? "," : "", action_button((int)g32(w + 0x14 + 4 * (uint32_t)i)));
+            speak_utf8(buf, 1);
+        } else {
+            speak(L"Opponent is fusing", 1);
+        }
+    }
+    int done = (int)g32(w + 0x2c);
+    if (phase == 1) g_cmd_t = gf(w + 8);
+    if (g_cmd_mine && phase == 1 && g_cmd_phase == 0)
+        fight_tone(2, 392, 392, 0.08f, 0.22f, 0);      /* go: presses during the intro are ignored */
+    if (g_cmd_mine && (phase == 1 || phase == 2) && done > g_cmd_done && done <= 5) {
+        float f = 523.25f * powf(1.12246f, (float)(done - 1));    /* a step up the scale per right button */
+        fight_tone(1, f, f, 0.05f, 0.2f, 0);
+    }
+    g_cmd_done = done;
+    if (phase != g_cmd_phase && phase == 2 && g_cmd_phase >= 0) {
+        int failed = (int)g32(w + 0x28) != 0;
+        if (!g_cmd_mine) speak(failed ? L"Opponent's fusion failed" : L"Opponent fused", 1);
+        else if (!failed) speak(L"Fusion success!", 1);
+        else if (g_cmd_t >= gf(w + 0x10) - 2) speakf(1, "Too slow, fusion failed. %d of 5", done);
+        else speakf(1, "Wrong button, fusion failed. %d of 5", done);
+    }
+    g_cmd_phase = phase;
+}
+
+/* ---------- Potara ----------
+ * Potara skills (Vegito, Kibitoshin) used in Hyper Mode start a guessing
+ * game like a Dragon Rush exchange: the fusing fighter picks a button, the
+ * other side tries to pick the same one. Tasks "[FIX]RLTCMD" / "[FIX]RCM DRAW";
+ * data is the work of [FIX]RCM DRAW (game code 820f09e0):
+ *   +0x04 phase: 0 intro (80 frames, picks ignored), 1 picking (120 frames),
+ *         2 both picks shown, 3 result
+ *   +0x1a who has picked (1 the fuser, 2 the guesser), +0x1c / +0x1e the
+ *   fuser's / guesser's pick (action masks), +0x20 / +0x22 their player numbers
+ *   +0x34 set to 1 when the guess stops the fusion: same button, or the
+ *         fuser picked nothing and the guesser did; nobody picking = fused. */
+static int g_pt_phase = -1, g_pt_mine, g_pt_fuser;
+
+static void potara_poll(void) {
+    uint32_t w = task_work("[FIX]RCM DRAW");
+    if (!w || !guest_ok(w, 0x40)) { g_pt_phase = -1; return; }
+    uint32_t b = g32(GAUGE_BASE_PTR);
+    int phase = (int)g32(w + 4);
+    int me_id = b && guest_ok(b + 0xf20, 4) ? (int8_t)g8(b + 0xf20 + (uint32_t)g_side) : g_side;
+    int fuser = (int16_t)g16(w + 0x20) == me_id;
+    if (g_pt_phase < 0) {
+        g_pt_fuser = fuser; g_pt_mine = 0;
+        /* short: the whole game is about 3 seconds; picks count from the beep */
+        speak(fuser ? L"Potara! Pick a button, opponent guesses" : L"Opponent's Potara! Guess their button", 1);
+    }
+    if (phase == 1 && g_pt_phase == 0) fight_tone(2, 392, 392, 0.08f, 0.22f, 0);    /* go */
+    if (phase == 1 && !g_pt_mine && (g16(w + 0x1a) & (fuser ? 1 : 2))) {
+        g_pt_mine = 1;
+        fight_tone(1, 880, 880, 0.04f, 0.2f, 0);     /* your pick registered */
+    }
+    if (phase != g_pt_phase && phase == 2 && g_pt_phase >= 0) {
+        int a = g16(w + 0x1c), d = g16(w + 0x1e), stopped = g16(w + 0x34) != 0;
+        int mine = fuser ? a : d, theirs = fuser ? d : a;
+        const char *res = fuser ? (stopped ? "Guessed, Potara failed" : "Potara success!")
+                                : (stopped ? "You stopped the Potara!" : "Opponent fused");
+        speakf(1, "You %s, opponent %s. %s", dr_button(mine), dr_button(theirs), res);
+    }
+    g_pt_phase = phase;
 }
 
 /* ---------- fight announcements ---------- */
@@ -598,5 +699,7 @@ void fight_poll_all(void) {
     health_poll();
     ult_poll();
     drush_poll();
+    fusion_poll();
+    potara_poll();
     announce_poll();
 }

@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdint.h>
 
-#define MOD_VERSION "1.0.10"
+#define MOD_VERSION "1.0.11"
 
 extern wchar_t g_game_dir[MAX_PATH];   /* folder of dbz3.exe, with trailing backslash */
 extern wchar_t g_mod_dir[MAX_PATH];    /* g_game_dir + "Budokai3Access\" */
@@ -106,6 +106,7 @@ uint32_t task_rec(const char *name);
 int task_works(const char *name, uint32_t *out, int max);
 void text_mute_pack_except(uint32_t sum, uint32_t keep_idx);
 void text_mute_pack2(uint32_t sum);
+void text_mute_list(uint32_t sum);
 int sysq_open(void);           /* menus.c: a save or storage Yes/No question is up */
 
 /* menus.c */

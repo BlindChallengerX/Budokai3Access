@@ -299,7 +299,7 @@
 07992cd0	178	1 OX Kamehameha
 07992cd0	179	Big Bang Kamehameha
 07992cd0	180	1 OOX Big Bang Kamehameha
-07992cd0	187	Potara <Vegit0>
+07992cd0	187	Potara <Vegito>
 07992cd0	207	Breakthrough
 07992cd0	246	Tempura Bowl
 07992cd0	247	Tonkatsu (Fried Pork) Bowl
@@ -2138,7 +2138,7 @@
 29688bd3	3	P+K+G+E attack hits opponent in Hyper Mode (Consumes 3 Ki Gauges)
 29688bd3	4	Transformation is reversed with empty Time Gauge Can only be used by Super Saiyan 4 Goku
 297d1d55	10	Press START button
-298f33fe	0	Potara <Vegit0>
+298f33fe	0	Potara <Vegito>
 298f33fe	1	Vegeta
 298f33fe	2	Can transform into Vegito by combining with Goku using Potara
 298f33fe	3	P+K+G+E attack hits opponent in Hyper Mode (Consumes 3 Ki Gauges)
@@ -3393,7 +3393,7 @@
 40cd89fd	0	At last, Kakarot, I have become a Super Saiyan! I defeated Frieza in an instant!
 40cd89fd	1	My power is now superior to yours in every way! Fight me, Kakarot!
 40cd89fd	2	Vegeta... 0K! Let's do it!
-40fef630	0	Potara <Vegit0>
+40fef630	0	Potara <Vegito>
 40fef630	2	Can transform into Vegito by combining with Vegeta using Potara
 40fef630	3	P+K+G+E attack hits opponent in Hyper Mode (Consumes 3 Ki Gauges)
 40fef630	4	Once you fail, you can no longer generate it.
@@ -3516,7 +3516,6 @@
 435c509a	2	A secret weapon What kind of weapon might that be?
 435c509a	3	If I told you, it wouldn't be a secret!... But I'll give you a hint... The winner's at the edge of the ring!
 435c509a	4	...He thinks he has all the answers... I wonder if he knows what he's getting himself into...
-436b9e5b	7	OOX
 437a225e	0	Power Near the Limit
 437a225e	1	Gohan (Kid - Teen - Adult) Trunks - Piccolo Gt. Saiyaman
 437a225e	2	When Health drops below 1/6, Attack Power is greatly increased!
@@ -5086,7 +5085,7 @@
 5fac626a	184	Final Shine Attack
 5fac626a	185	Big Bang Kamehameha
 5fac626a	186	1 OOX Big Bang Kamehameha
-5fac626a	192	Potara <Vegit0>
+5fac626a	192	Potara <Vegito>
 5fac626a	214	Breakthrough
 5fac626a	246	Tempura Bowl
 5fac626a	247	Tonkatsu (Fried Pork) Bowl
@@ -6062,12 +6061,12 @@
 69475272	184	Final Shine Attack
 69475272	185	Big Bang Kamehameha
 69475272	186	1 OOX Big Bang Kamehameha
-69475272	187	Potara <Vegit0> (Goku)
+69475272	187	Potara <Vegito> (Goku)
 69475272	188	Super Vegito
 69475272	189	Kamehameha
 69475272	190	Spirit Cannon
 69475272	191	Spirit Sword
-69475272	192	Potara <Vegit0> (Vegeta)
+69475272	192	Potara <Vegito> (Vegeta)
 69475272	193	Super Vegito
 69475272	194	Galick Gun
 69475272	195	Spirit Cannon
@@ -9749,12 +9748,12 @@ b65d9602	183	Galick Gun
 b65d9602	184	Final Shine Attack
 b65d9602	185	Big Bang Kamehameha
 b65d9602	186	1 OOX Big Bang Kamehameha
-b65d9602	187	Potara <Vegit0>
+b65d9602	187	Potara <Vegito>
 b65d9602	188	Super Vegito
 b65d9602	189	Kamehameha
 b65d9602	190	Spirit Cannon
 b65d9602	191	Spirit Sword
-b65d9602	192	Potara <Vegit0>
+b65d9602	192	Potara <Vegito>
 b65d9602	193	Super Vegito
 b65d9602	194	Galick Gun
 b65d9602	195	Spirit Cannon

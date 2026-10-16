@@ -138,6 +138,8 @@ void text_mute_pack(uint32_t sum) { g_muted_pack = sum; g_muted_keep = 0xFFFFFFF
 void text_mute_pack_except(uint32_t sum, uint32_t keep_idx) { g_muted_pack = sum; g_muted_keep = keep_idx; }
 static volatile uint32_t g_muted_pack2;                 /* a second muted pack (Options screen) */
 void text_mute_pack2(uint32_t sum) { g_muted_pack2 = sum; }
+static volatile uint32_t g_muted_list;                  /* the Custom Tray's capsule list (its own reader) */
+void text_mute_list(uint32_t sum) { g_muted_list = sum; }
 void text_mute_all(int on) { g_mute_all = on; }
 
 /* Texts that are only control hints (the button bar) are not read
@@ -241,7 +243,8 @@ void text_poll(void) {
         if (!v->spoken && now - v->first >= 120) {
             v->spoken = 1;
             int muted = ((uint32_t)(v->key >> 32) == g_muted_pack && (uint32_t)v->key != g_muted_keep)
-                        || (g_muted_pack2 && (uint32_t)(v->key >> 32) == g_muted_pack2);
+                        || (g_muted_pack2 && (uint32_t)(v->key >> 32) == g_muted_pack2)
+                        || (g_muted_list && (uint32_t)(v->key >> 32) == g_muted_list);
             if (!g_mute_all && !is_hint(v->text) && !muted && nsay < 16) say[nsay++] = v->text;
         }
     }

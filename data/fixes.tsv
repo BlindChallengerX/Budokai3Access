@@ -238,3 +238,13 @@ e1332849	12
 # Skill Shop logo and money-counter pictures (the shop reader says the money)
 2627e92d	4	
 2627e92d	10	
+# Fusion command bar picture (pack 436b9e5b/7) is read by fight.c fusion_poll; Vegito read as Vegit0
+436b9e5b	7	
+07992cd0	187	Potara <Vegito>
+298f33fe	0	Potara <Vegito>
+40fef630	0	Potara <Vegito>
+5fac626a	192	Potara <Vegito>
+69475272	187	Potara <Vegito> (Goku)
+69475272	192	Potara <Vegito> (Vegeta)
+b65d9602	187	Potara <Vegito>
+b65d9602	192	Potara <Vegito>

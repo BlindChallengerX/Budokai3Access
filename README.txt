@@ -1,4 +1,4 @@
-Budokai 3 Access 1.0.10
+Budokai 3 Access 1.0.11
 
 A screen reader mod for Dragon Ball Z Budokai 3 on PC. It speaks through
 your screen reader (NVDA, JAWS and others), or the Windows voice if none is
@@ -17,7 +17,7 @@ WHAT YOU NEED
 
 INSTALL
 
-1. Unzip Budokai3Access-1.0.10.zip into the game folder, the folder with dbz3.exe.
+1. Unzip Budokai3Access-1.0.11.zip into the game folder, the folder with dbz3.exe.
 2. Run "Play Budokai 3 Access.exe" from that folder.
 
 If Windows says "Windows protected your PC", choose "More info", then
@@ -49,8 +49,10 @@ Left stick click (L3)    F
 Right stick click (R3)   K
 
 In menus, Space (A) picks and P (Y) goes back. Where the mod names
-controller buttons, for example in Dragon Rush, X is L, Y is P, A is Space
-and B is Backspace. To change the keys, see THE PORT'S SETTINGS below.
+controller buttons, X is L, Y is P, A is Space and B is Backspace.
+In Dragon Rush, Fusion and Potara the mod says actions instead (Punch, Kick,
+Guard, Ki); press whatever key or button does that action in your layout.
+To change the keys, see THE PORT'S SETTINGS below.
 
 
 PLAYSTATION CONTROLLERS
@@ -195,11 +197,39 @@ DRAGON RUSH
 
 When a Dragon Rush starts you hear "Dragon Rush! You attack" or "You
 defend". Each exchange then says what you can press, for example
-"Attack 2: Y A B" or "Guess 1: X Y A B" (a button the attacker has already
-used is left out, because no one can pick it again). You have about 3
-seconds. A short click means your button counted. After both have picked
-you hear both buttons and the result, for example "You X, opponent B.
-Hit!". The defender stops the rush by guessing the same button.
+"Attack 2: Kick, Guard, Ki" or "Guess 1: Punch, Kick, Guard, Ki" (an action
+the attacker has already used is left out, because no one can pick it
+again). These are actions, not buttons: press whatever does Punch, Kick,
+Guard or Ki on your controller. You have about 3 seconds. A short click
+means your pick counted. After both have picked
+you hear both picks and the result, for example "You Punch, opponent Ki.
+Hit!". The defender stops the rush by guessing the same one.
+
+
+FUSION AND POTARA
+
+Fusion skills (Fusion <Gotenks>, <Gogeta>, <Super Saiyan 4 Gogeta>) and
+Potara <Vegito> are used like an Ultimate: in Hyper Mode, press P+K+G+E
+again. Each starts a short button game.
+
+Fusion: you hear the five actions to press in order, for example "Fusion!
+Press Kick, Guard, Punch, Ki, Punch". They change every time. Presses only
+count after a low beep about a second in (earlier presses are ignored, not
+mistakes); then you have 3 seconds. Each right press plays a note a step
+higher. One wrong press ends it. You hear "Fusion success!", or "Wrong button, fusion
+failed" or "Too slow, fusion failed" with how many you got right. A failed
+fusion gives a weaker fused fighter (fat Gotenks).
+
+Potara <Vegito>: works like one Dragon Rush exchange. You hear "Potara! Pick
+a button, opponent guesses". After the low beep press Punch, Kick, Guard or
+Ki within 2 seconds; a click means it counted. If the opponent guesses the
+same one the Potara fails, and you can't try it again that fight. Then you
+hear both picks and "Potara success!" or "Guessed, Potara failed". When the
+opponent uses one on you, you hear "Opponent's Potara! Guess their button".
+Potara <Kibitoshin> has no button game.
+
+Like Dragon Rush, these games are spoken as actions (Punch, Kick, Guard, Ki),
+so they are right for any controller, custom layout or the keyboard.
 
 DISTANCE SOUND
 
